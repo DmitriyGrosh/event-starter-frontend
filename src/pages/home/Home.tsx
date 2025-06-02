@@ -4,7 +4,7 @@ import React from 'react';
 import { Layout, Menu, Typography, Card, Row, Col, Button } from 'antd';
 import { HomeOutlined, CalendarOutlined, TeamOutlined, SettingOutlined } from '@ant-design/icons';
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Content, Footer } = Layout;
 const { Title, Paragraph } = Typography;
 
 export const Home = () => {
@@ -99,4 +99,4 @@ export const Home = () => {
       </Footer>
     </Layout>
   );
-} 
+}
