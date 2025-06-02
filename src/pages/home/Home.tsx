@@ -7,7 +7,7 @@ import { HomeOutlined, CalendarOutlined, TeamOutlined, SettingOutlined } from '@
 const { Header, Content, Footer } = Layout;
 const { Title, Paragraph } = Typography;
 
-export const Home = () => {
+const Home = () => {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Header style={{ display: 'flex', alignItems: 'center', padding: '0 24px', background: '#fff' }}>
@@ -100,3 +100,5 @@ export const Home = () => {
     </Layout>
   );
 }
+
+export default Home;
