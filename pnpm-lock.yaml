@@ -11,6 +11,18 @@ dependencies:
   '@ant-design/icons':
     specifier: ^6.0.0
     version: 6.0.0(react-dom@18.2.0)(react@18.2.0)
+  '@reatom/framework':
+    specifier: ^3.4.64
+    version: 3.4.64
+  '@reatom/npm-react':
+    specifier: ^3.10.6
+    version: 3.10.6(react@18.2.0)
+  '@reatom/persist':
+    specifier: ^3.4.1
+    version: 3.4.1
+  '@reatom/url':
+    specifier: ^3.9.0
+    version: 3.9.0
   antd:
     specifier: ^5.25.4
     version: 5.25.4(react-dom@18.2.0)(react@18.2.0)
@@ -560,6 +572,107 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       react-is: 18.3.1
+    dev: false
+
+  /@reatom/async@3.16.8:
+    resolution: {integrity: sha512-9x+mPFZMbAtEpLsnF4s0dVQE2e1K0/lE8DA8F9OeDwFzdZqQhQLpirbfGEh+NYHOVdYk9Yj6lhm6O7TBLGHnKg==}
+    dependencies:
+      '@reatom/core': 3.10.1
+      '@reatom/effects': 3.11.3
+      '@reatom/hooks': 3.6.1
+      '@reatom/primitives': 3.11.0
+      '@reatom/utils': 3.11.3
+    dev: false
+
+  /@reatom/core@3.10.1:
+    resolution: {integrity: sha512-A5vx+akCGkc+YCYhqPaAnR46uvqe70pQ2JB82JCLgOrj+YmnStIGkiaiWG43wn30qUjatXjejJmGkqQbjtri+A==}
+    dev: false
+
+  /@reatom/effects@3.11.3:
+    resolution: {integrity: sha512-0qxr7m6e+GrOvt0pESONl4aRZxGjsU1HWXIsDR2Ghw0mNGjuStnEDUZnO+MVbKOArMIAvZ8ZoMrQWqXEBfOrVg==}
+    dependencies:
+      '@reatom/core': 3.10.1
+      '@reatom/utils': 3.11.3
+    dev: false
+
+  /@reatom/framework@3.4.64:
+    resolution: {integrity: sha512-ev0CLSBk9eAr7+sdw5NJg2Dax8RXFitGoDbBag0suYYIb6x91sHCdsDFV4PTWGnXEvwX3+KYmREsVZuUO6lFGA==}
+    dependencies:
+      '@reatom/async': 3.16.8
+      '@reatom/core': 3.10.1
+      '@reatom/effects': 3.11.3
+      '@reatom/hooks': 3.6.1
+      '@reatom/lens': 3.12.0
+      '@reatom/logger': 3.8.4
+      '@reatom/primitives': 3.11.0
+      '@reatom/utils': 3.11.3
+    dev: false
+
+  /@reatom/hooks@3.6.1:
+    resolution: {integrity: sha512-1q8qXAOkQlDKc/Y94alPHWqMnXvJhCG4Rr9hQxPMPG1Qf3WpeKm7Zdxs4v3DC2Kcw6oG6djVk3i5duIjPygGWA==}
+    dependencies:
+      '@reatom/core': 3.10.1
+      '@reatom/effects': 3.11.3
+      '@reatom/utils': 3.11.3
+    dev: false
+
+  /@reatom/lens@3.12.0:
+    resolution: {integrity: sha512-YsEnYYHi58ePDscXomnbDPC9NSggfJQHvhcpqEAmvZuHH4nbsUpoQj2W69nSQyUDH/+X+TxURvsGUOHaXMl9pQ==}
+    dependencies:
+      '@reatom/core': 3.10.1
+      '@reatom/effects': 3.11.3
+      '@reatom/hooks': 3.6.1
+      '@reatom/primitives': 3.11.0
+      '@reatom/utils': 3.11.3
+    dev: false
+
+  /@reatom/logger@3.8.4:
+    resolution: {integrity: sha512-MOz8Td1eZV+kU4QpkZXAdO9qFtGjqpm40crIlMNweDtOH7GgUmV2oKgOXRORQzYbeGHVMlQHG4J5iPeEQdM7KA==}
+    dependencies:
+      '@reatom/core': 3.10.1
+      '@reatom/utils': 3.11.3
+    dev: false
+
+  /@reatom/npm-react@3.10.6(react@18.2.0):
+    resolution: {integrity: sha512-lyoJD+pF2/P6B5bzSYjUQCzUSa0zkUQNAm1Lj8VXmVbILuiWid+n/9o/fJa8eEyH+w6KaFRunz1WZcOg/NW91g==}
+    peerDependencies:
+      react: '>=16.8.0'
+    dependencies:
+      '@reatom/core': 3.10.1
+      '@reatom/effects': 3.11.3
+      '@reatom/lens': 3.12.0
+      '@reatom/utils': 3.11.3
+      react: 18.2.0
+      use-sync-external-store: 1.5.0(react@18.2.0)
+    dev: false
+
+  /@reatom/persist@3.4.1:
+    resolution: {integrity: sha512-LM3JriTJNSH1EluVcvW9ik7DK5oa0NeIgkz8rIGvVk/c9ZIqp0Olthc/WEB5qNNDdzZMrebGRFiHRM2iO5/T6A==}
+    dependencies:
+      '@reatom/core': 3.10.1
+      '@reatom/hooks': 3.6.1
+      '@reatom/lens': 3.12.0
+      '@reatom/utils': 3.11.3
+    dev: false
+
+  /@reatom/primitives@3.11.0:
+    resolution: {integrity: sha512-b+jtK7qpQxSP83mYQXpPRMlFyg+C9WPv4sZDWSmm00mwmwetW0KbltftkWiwQjQM1TLwpDLZ6R7DX7fcTraIgg==}
+    dependencies:
+      '@reatom/core': 3.10.1
+      '@reatom/utils': 3.11.3
+    dev: false
+
+  /@reatom/url@3.9.0:
+    resolution: {integrity: sha512-uQ2gilyIf9qxrta15AHFwZhkAE/MynDlV34JNlOfGJdVTAuPd6HmYjuTYGy15yBdTsV8xCK9ry67H8NP1/BrEw==}
+    dependencies:
+      '@reatom/core': 3.10.1
+      '@reatom/effects': 3.11.3
+      '@reatom/hooks': 3.6.1
+      '@reatom/utils': 3.11.3
+    dev: false
+
+  /@reatom/utils@3.11.3:
+    resolution: {integrity: sha512-H2FQf9xra7Twf0PxS6L0DtuRRC79NfHRB3V/YhnhPHyUE/UFscXrin/I2eGj3FEKcgOfC2BWnzCOrkXjKWgECQ==}
     dev: false
 
   /@swc/counter@0.1.3:
@@ -1488,3 +1601,11 @@ packages:
   /undici-types@6.21.0:
     resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
     dev: true
+
+  /use-sync-external-store@1.5.0(react@18.2.0):
+    resolution: {integrity: sha512-Rb46I4cGGVBmjamjphe8L/UnvJD+uPPtTkNvX5mZgqdbavhI4EbgIWJiIHXJ8bc/i9EQGPRh4DwEURJ552Do0A==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    dependencies:
+      react: 18.2.0
+    dev: false

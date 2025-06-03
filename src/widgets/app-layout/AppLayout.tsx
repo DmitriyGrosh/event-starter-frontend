@@ -102,7 +102,7 @@ export const AppLayout: FC<PropsWithChildren> = ({children}) => {
 						onClick={() => setCollapsed(false)}
 					/>
 				</Header>
-				<Content style={{padding: '16px'}}>
+				<Content>
 					{children}
 				</Content>
 			</Layout>
