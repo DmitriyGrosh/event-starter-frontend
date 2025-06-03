@@ -9,11 +9,11 @@ echo
 
 echo "2. Checking docker-compose status:"
 cd ~/event-starter-frontend
-docker-compose ps
+docker compose ps
 echo
 
 echo "3. Checking nginx container logs:"
-docker-compose logs nginx
+docker compose logs nginx
 echo
 
 echo "4. Checking SSL certificate files:"
@@ -33,5 +33,5 @@ curl -k -I https://localhost
 echo
 
 echo "8. Checking nginx configuration syntax:"
-docker-compose exec nginx nginx -t
+docker compose exec nginx nginx -t
 echo 

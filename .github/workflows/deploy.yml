@@ -101,24 +101,24 @@ jobs:
             docker rm frontend-app || true
             
             # Pull the latest images
-            docker-compose pull
+            docker compose pull
             
             # Stop and remove old containers
-            docker-compose down || true
+            docker compose down || true
             
             # Start the new deployment
-            docker-compose up -d
+            docker compose up -d
             
             # Wait a moment for services to start
             sleep 10
             
             # Check deployment status
             echo "=== Deployment Status ==="
-            docker-compose ps
+            docker compose ps
             
             # Check nginx logs for any errors
             echo "=== Nginx Logs ==="
-            docker-compose logs nginx --tail=20
+            docker compose logs nginx --tail=20
             
             # Clean up old images
             docker image prune -f 
