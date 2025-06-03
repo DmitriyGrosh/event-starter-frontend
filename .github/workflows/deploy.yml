@@ -71,7 +71,7 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "docker-compose.yml,nginx.conf"
+          source: "docker-compose.yml,nginx.conf,debug-ssl.sh"
           target: "~/event-starter-frontend/"
 
       - name: Deploy with Docker Compose
@@ -83,6 +83,9 @@ jobs:
           script: |
             cd ~/event-starter-frontend
             
+            # Make debug script executable
+            chmod +x debug-ssl.sh
+            
             # Convert repository name to lowercase for Docker
             REPO="${{ github.repository_owner }}/event-starter-frontend"
             REPO_LOWER=$(echo $REPO | tr '[:upper:]' '[:lower:]')
@@ -93,6 +96,10 @@ jobs:
             sed -i "s|dockerfile: Dockerfile|# dockerfile: Dockerfile|g" docker-compose.yml
             sed -i "/container_name: event-starter-frontend/i \ \ \ \ image: ${{ env.REGISTRY }}/$REPO_LOWER:main" docker-compose.yml
             
+            # Stop any existing containers that might be using port 80/443
+            docker stop frontend-app || true
+            docker rm frontend-app || true
+            
             # Pull the latest images
             docker-compose pull
             
@@ -101,6 +108,17 @@ jobs:
             
             # Start the new deployment
             docker-compose up -d
+            
+            # Wait a moment for services to start
+            sleep 10
+            
+            # Check deployment status
+            echo "=== Deployment Status ==="
+            docker-compose ps
+            
+            # Check nginx logs for any errors
+            echo "=== Nginx Logs ==="
+            docker-compose logs nginx --tail=20
             
             # Clean up old images
             docker image prune -f 

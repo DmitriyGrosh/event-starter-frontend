@@ -12,7 +12,7 @@ const Home = () => {
     <Layout style={{ minHeight: '100vh' }}>
       <Header style={{ display: 'flex', alignItems: 'center', padding: '0 24px', background: '#fff' }}>
         <div style={{ color: '#1890ff', fontSize: '24px', fontWeight: 'bold' }}>
-          Event Starter
+          Event Starter Test
         </div>
         <Menu
           mode="horizontal"
