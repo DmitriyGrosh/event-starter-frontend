@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ format('{0}', github.repository) }}
+  IMAGE_NAME: ${{ github.repository_owner }}/event-starter-frontend
 
 jobs:
   build-and-push:
@@ -58,16 +58,20 @@ jobs:
             # Login to GitHub Container Registry
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             
-            # Pull the latest image (using lowercase repository name)
-            docker pull ${{ env.REGISTRY }}/${{ format('{0}', github.repository) }}:main
+            # Convert repository name to lowercase for Docker
+            REPO="${{ github.repository_owner }}/event-starter-frontend"
+            REPO_LOWER=$(echo $REPO | tr '[:upper:]' '[:lower:]')
+            
+            # Pull the latest image
+            docker pull ${{ env.REGISTRY }}/$REPO_LOWER:main
             
             # Stop and remove the old container if it exists
             docker stop frontend-app || true
             docker rm frontend-app || true
             
-            # Run the new container (using lowercase repository name)
+            # Run the new container
             docker run -d \
               --name frontend-app \
               --restart unless-stopped \
-              -p 80:80 \
-              ${{ env.REGISTRY }}/${{ format('{0}', github.repository) }}:main 
+              -p 80:3000 \
+              ${{ env.REGISTRY }}/$REPO_LOWER:main 
