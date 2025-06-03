@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: ${{ lower(github.repository) }}
 
 jobs:
   build-and-push:
@@ -58,16 +58,16 @@ jobs:
             # Login to GitHub Container Registry
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             
-            # Pull the latest image
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main
+            # Pull the latest image (using lowercase repository name)
+            docker pull ${{ env.REGISTRY }}/${{ lower(github.repository) }}:main
             
             # Stop and remove the old container if it exists
             docker stop frontend-app || true
             docker rm frontend-app || true
             
-            # Run the new container
+            # Run the new container (using lowercase repository name)
             docker run -d \
               --name frontend-app \
               --restart unless-stopped \
               -p 80:80 \
-              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main 
+              ${{ env.REGISTRY }}/${{ lower(github.repository) }}:main 
