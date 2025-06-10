@@ -5,7 +5,7 @@ import { Card, Typography, Space, Tag, Flex, Button } from 'antd';
 import { EnvironmentOutlined, CalendarOutlined, UserOutlined } from '@ant-design/icons';
 import { useParams } from 'next/navigation';
 import { events } from '@/entities/events/model/eventsData';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const { Title, Text } = Typography;
 

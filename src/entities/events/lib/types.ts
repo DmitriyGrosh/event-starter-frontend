@@ -1,7 +1,7 @@
 export type EventsFilter = {
 	tags: string[];
-	startedAt: Date;
-	endedAt: Date;
+	startedAt: Date | null;
+	endedAt: Date | null;
 	location: string;
 	priceRange: [number, number];
 }

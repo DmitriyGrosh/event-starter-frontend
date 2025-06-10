@@ -3,28 +3,28 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, Card, Flex, Badge, List, Row, Col, Button } from 'antd';
 import { CardEvent } from '@/entities/events';
-import type { Moment } from 'moment';
-import moment from 'moment';
+import type { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { events } from '@/entities/events/model/eventsData';
 
 const { Title } = Typography;
 
 const CalendarPage = () => {
-  const [currentDate, setCurrentDate] = useState(moment());
-  const [selectedDate, setSelectedDate] = useState(moment());
+  const [currentDate, setCurrentDate] = useState(dayjs());
+  const [selectedDate, setSelectedDate] = useState(dayjs());
 
   const prevMonth = () => {
-    setCurrentDate(currentDate.clone().subtract(1, 'month'));
+    setCurrentDate(currentDate.subtract(1, 'month'));
   };
 
   const nextMonth = () => {
-    setCurrentDate(currentDate.clone().add(1, 'month'));
+    setCurrentDate(currentDate.add(1, 'month'));
   };
 
   const renderCalendarDays = () => {
     const days = [];
-    const firstDayOfMonth = currentDate.clone().startOf('month').day();
+    const firstDayOfMonth = currentDate.startOf('month').day();
     const daysInMonth = currentDate.daysInMonth();
     const lastDayOfMonth = (firstDayOfMonth + daysInMonth) % 7;
 
@@ -35,7 +35,7 @@ const CalendarPage = () => {
 
     // Add days of the month
     for (let day = 1; day <= daysInMonth; day++) {
-      const date = currentDate.clone().date(day);
+      const date = currentDate.date(day);
       const eventsOnDate = events.filter(event => event.date?.isSame(date, 'day'));
       const isSelected = selectedDate.isSame(date, 'day');
 
