@@ -1,8 +1,9 @@
-import {Layout, Menu} from "antd";
+import {Layout, Menu, Button} from "antd";
 import React, {FC, PropsWithChildren, useState} from "react";
-import {MenuUnfoldOutlined, MenuFoldOutlined, UserOutlined, VideoCameraOutlined, CalendarOutlined, BellOutlined} from "@ant-design/icons";
+import {MenuUnfoldOutlined, MenuFoldOutlined, UserOutlined, VideoCameraOutlined, CalendarOutlined, BellOutlined, LogoutOutlined} from "@ant-design/icons";
 import {DESIGN_TOKENS} from "@/shared/const";
 import { useRouter, usePathname } from 'next/navigation';
+import { useAuth } from '@/shared/context/auth-context';
 
 const {Content, Header, Sider} = Layout;
 
@@ -10,6 +11,7 @@ export const AppLayout: FC<PropsWithChildren> = ({children}) => {
 	const [collapsed, setCollapsed] = useState(true);
 	const router = useRouter();
 	const pathname = usePathname();
+	const { logout, isAuthenticated } = useAuth();
 
 	const items = [
 		{
@@ -32,11 +34,22 @@ export const AppLayout: FC<PropsWithChildren> = ({children}) => {
 			icon: <BellOutlined/>,
 			label: 'Уведомления',
 		},
+		...(isAuthenticated ? [{
+			key: 'logout',
+			icon: <LogoutOutlined />,
+			label: 'Выйти',
+			danger: true,
+		}] : []),
 	];
 
 	const handleMenuClick = ({ key }: { key: string }) => {
 		setCollapsed(true);
-		router.push(key);
+		if (key === 'logout') {
+			logout();
+			router.push('/login');
+		} else {
+			router.push(key);
+		}
 	};
 
 	return (

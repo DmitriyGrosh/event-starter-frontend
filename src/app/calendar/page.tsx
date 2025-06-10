@@ -1,16 +1,19 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Typography, Card, Flex, Badge, List, Row, Col, Button } from 'antd';
+import { Typography, Card, Flex, Badge, List, Row, Col, Button, Calendar } from 'antd';
 import { CardEvent } from '@/entities/events';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { events } from '@/entities/events/model/eventsData';
+import { useAuth } from '@/shared/context/auth-context';
+import type { Moment } from 'moment';
 
 const { Title } = Typography;
 
 const CalendarPage = () => {
+  const { isAuthenticated } = useAuth();
   const [currentDate, setCurrentDate] = useState(dayjs());
   const [selectedDate, setSelectedDate] = useState(dayjs());
 
@@ -71,6 +74,10 @@ const CalendarPage = () => {
   const filteredEvents = events.filter(event => 
     event.date?.isSame(selectedDate, 'day')
   );
+
+	if (!isAuthenticated) {
+		return null; // This will be handled by middleware, but we keep it as a safety check
+	}
 
   return (
     <Flex vertical gap={16} style={{ padding: '16px' }}>

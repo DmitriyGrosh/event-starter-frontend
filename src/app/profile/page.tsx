@@ -1,14 +1,21 @@
 'use client';
 
 import React from 'react';
-import { Typography, Card, Avatar, Tabs, Space, Statistic, Row, Col, Flex } from 'antd';
+import { Card, Typography, Avatar, Space, Tabs, Flex, Statistic, Row, Col } from 'antd';
 import { UserOutlined, CalendarOutlined, TeamOutlined } from '@ant-design/icons';
+import { useAuth } from '@/shared/context/auth-context';
 import { CardEvent } from '@/entities/events';
 import { events } from '@/entities/events/model/eventsData';
 
 const { Title, Text } = Typography;
 
-const ProfilePage = () => {
+export default function ProfilePage() {
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return null; // This will be handled by middleware, but we keep it as a safety check
+  }
+
   // For demo purposes, we'll show the first 3 events as user's events
   const userEvents = events.slice(0, 3);
 
@@ -18,7 +25,20 @@ const ProfilePage = () => {
       label: 'О себе',
       children: (
         <Card>
-          <Text>Информация о пользователе будет здесь</Text>
+          <Space direction="vertical" style={{ width: '100%' }}>
+            <div>
+              <Text strong>Email:</Text>
+              <Text> user@example.com</Text>
+            </div>
+            <div>
+              <Text strong>Имя:</Text>
+              <Text> Иван Иванов</Text>
+            </div>
+            <div>
+              <Text strong>Дата регистрации:</Text>
+              <Text> 01.01.2024</Text>
+            </div>
+          </Space>
         </Card>
       ),
     },
@@ -53,14 +73,16 @@ const ProfilePage = () => {
   ];
 
   return (
-    <div style={{ padding: '16px' }}>
+    <div style={{ padding: '24px', maxWidth: '800px', margin: '0 auto' }}>
       <Card>
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
           <div style={{ textAlign: 'center' }}>
             <Avatar size={120} icon={<UserOutlined />} />
-            <Title level={2} style={{ marginTop: '16px' }}>Имя пользователя</Title>
+            <Title level={2} style={{ marginTop: '16px' }}>
+              Профиль пользователя
+            </Title>
           </div>
-          
+
           <Row gutter={16} justify="center">
             <Col>
               <Statistic
@@ -87,6 +109,4 @@ const ProfilePage = () => {
       </Card>
     </div>
   );
-};
-
-export default ProfilePage; 
+} 
