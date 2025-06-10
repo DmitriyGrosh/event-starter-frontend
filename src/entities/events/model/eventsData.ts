@@ -134,5 +134,15 @@ export const events: Event[] = [
         description: "Фестиваль фитнеса с мастер-классами от ведущих тренеров и соревнованиями.",
         date: dayjs().add(1, 'day'),
         tags: ['sport', 'fitness']
-    }
+    },
+	{
+		id: "13",
+		title: "Защита Event-starter",
+		location: "Ростов-на-Дону",
+		price: 2500,
+		imageUrl: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=600&auto=format&fit=crop",
+		description: "Фестиваль фитнеса с мастер-классами от ведущих тренеров и соревнованиями.",
+		date: dayjs().add(1, 'day'),
+		tags: ['startup']
+	}
 ]; 
