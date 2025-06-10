@@ -4,8 +4,6 @@ import React, {FC, useState, useMemo} from "react";
 import {Button, Card, Drawer, Space, DatePicker, Select, Slider, Input, AutoComplete} from "antd";
 import {FilterOutlined, CloseOutlined, EnvironmentOutlined, ClearOutlined} from "@ant-design/icons";
 import {DESIGN_TOKENS} from "@/shared/const";
-import {useAtom} from "@reatom/npm-react";
-import {filterAtom} from "../model/eventsModel";
 import {EventsFilter} from "@/entities/events";
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
@@ -21,9 +19,13 @@ const DEFAULT_FILTER: EventsFilter = {
 	endedAt: null
 };
 
-export const FilterEvent: FC = () => {
+interface FilterEventProps {
+	filter: EventsFilter;
+	onFilterChange: (filter: EventsFilter) => void;
+}
+
+export const FilterEvent: FC<FilterEventProps> = ({ filter, onFilterChange }) => {
 	const [isOpen, setIsOpen] = useState(false);
-	const [filter, setFilter] = useAtom(filterAtom);
 
 	// Get unique locations from events
 	const locationOptions = useMemo(() => {
@@ -43,26 +45,26 @@ export const FilterEvent: FC = () => {
 	};
 
 	const handleClearFilters = () => {
-		setFilter(DEFAULT_FILTER);
+		onFilterChange(DEFAULT_FILTER);
 	};
 
 	const handleTagsChange = (tags: string[]) => {
-		setFilter({ ...filter, tags });
+		onFilterChange({ ...filter, tags });
 	};
 
 	const handleLocationChange = (value: string) => {
-		setFilter({ ...filter, location: value });
+		onFilterChange({ ...filter, location: value });
 	};
 
 	const handleDateChange = (dates: [Dayjs | null, Dayjs | null] | null) => {
 		if (dates && dates[0] && dates[1]) {
-			setFilter({
+			onFilterChange({
 				...filter,
 				startedAt: dates[0].toDate(),
 				endedAt: dates[1].toDate()
 			});
 		} else {
-			setFilter({
+			onFilterChange({
 				...filter,
 				startedAt: null,
 				endedAt: null
@@ -70,13 +72,13 @@ export const FilterEvent: FC = () => {
 		}
 	};
 
-	const handlePriceChange = (value: number[]) => {
-		setFilter({ ...filter, priceRange: [value[0], value[1]] });
+	const handlePriceChange = (value: [number, number]) => {
+		onFilterChange({ ...filter, priceRange: value });
 	};
 
 	const handleTodayClick = () => {
 		const today = dayjs();
-		setFilter({
+		onFilterChange({
 			...filter,
 			startedAt: today.startOf('day').toDate(),
 			endedAt: today.endOf('day').toDate()
@@ -85,7 +87,7 @@ export const FilterEvent: FC = () => {
 
 	const handleTomorrowClick = () => {
 		const tomorrow = dayjs().add(1, 'day');
-		setFilter({
+		onFilterChange({
 			...filter,
 			startedAt: tomorrow.startOf('day').toDate(),
 			endedAt: tomorrow.endOf('day').toDate()
@@ -115,7 +117,6 @@ export const FilterEvent: FC = () => {
 				onClose={handleClose}
 				open={isOpen}
 				height="75vh"
-				closeIcon={<CloseOutlined />}
 				styles={{
 					header: {
 						borderBottom: `1px solid ${DESIGN_TOKENS.PRIMARY}`,
@@ -183,27 +184,21 @@ export const FilterEvent: FC = () => {
 					<Card size="small" title="Цена">
 						<Slider
 							range
-							value={filter.priceRange}
-							onChange={handlePriceChange}
 							min={0}
-							max={50000}
-							step={1000}
-							marks={{
-								0: '0₽',
-								25000: '25000₽',
-								50000: '50000₽'
-							}}
+							max={100}
+							value={filter.priceRange}
+							onChange={(value) => handlePriceChange(value as [number, number])}
 						/>
 					</Card>
 
 					<Space style={{ width: '100%', justifyContent: 'space-between' }}>
 						<Button 
-							icon={<ClearOutlined />}
+							icon={<ClearOutlined />} 
 							onClick={handleClearFilters}
 						>
-							Сбросить фильтры
+							Очистить фильтры
 						</Button>
-						<Button type="primary" size="large" onClick={handleApplyFilters}>
+						<Button type="primary" onClick={handleApplyFilters}>
 							Применить фильтры
 						</Button>
 					</Space>

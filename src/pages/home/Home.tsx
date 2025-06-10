@@ -1,17 +1,24 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import {CardEvent, FilterEvent, SearchEvent} from "@/entities/events";
 import {Flex} from "antd";
 import {DESIGN_TOKENS} from "@/shared/const";
 import {events} from "@/entities/events/model/eventsData";
-import {useAtom} from "@reatom/npm-react";
-import {searchAtom, filterAtom} from "@/entities/events/model/eventsModel";
 import dayjs from 'dayjs';
+import { EventsFilter } from '@/entities/events';
+
+const DEFAULT_FILTER: EventsFilter = {
+  priceRange: [0, 100],
+  location: '',
+  tags: [],
+  startedAt: null,
+  endedAt: null
+};
 
 const Home = () => {
-  const [search] = useAtom(searchAtom);
-  const [filter] = useAtom(filterAtom);
+  const [search, setSearch] = useState('');
+  const [filter, setFilter] = useState<EventsFilter>(DEFAULT_FILTER);
 
   const filteredEvents = events.filter(event => {
     // Search filter - match title or description
@@ -44,8 +51,8 @@ const Home = () => {
   return (
     <Flex vertical>
       <Flex gap={4} align="center" style={{ background: DESIGN_TOKENS.PRIMARY, padding: "0 16px 16px 16px" }}>
-        <SearchEvent />
-        <FilterEvent />
+        <SearchEvent search={search} onSearchChange={setSearch} />
+        <FilterEvent filter={filter} onFilterChange={setFilter} />
       </Flex>
       <Flex vertical style={{ padding: 4 }} gap={8}>
         {filteredEvents.map((event) => (

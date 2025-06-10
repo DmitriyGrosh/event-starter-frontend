@@ -10,10 +10,6 @@
   "dependencies": {
     "@ant-design/colors": "^7.2.1",
     "@ant-design/icons": "^6.0.0",
-    "@reatom/framework": "^3.4.64",
-    "@reatom/npm-react": "^3.10.6",
-    "@reatom/persist": "^3.4.1",
-    "@reatom/url": "^3.9.0",
     "antd": "^5.25.4",
     "dayjs": "^1.11.13",
     "moment": "^2.30.1",

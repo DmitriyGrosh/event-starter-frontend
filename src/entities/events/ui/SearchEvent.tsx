@@ -4,12 +4,13 @@ import React, {FC} from "react";
 import {Flex, Input} from "antd";
 import {DESIGN_TOKENS} from "@/shared/const";
 import {SearchOutlined} from "@ant-design/icons";
-import {useAtom} from "@reatom/npm-react";
-import {searchAtom} from "../model/eventsModel";
 
-export const SearchEvent: FC = () => {
-	const [search, setSearch] = useAtom(searchAtom);
+interface SearchEventProps {
+	search: string;
+	onSearchChange: (value: string) => void;
+}
 
+export const SearchEvent: FC<SearchEventProps> = ({ search, onSearchChange }) => {
 	return (
 		<Input 
 			style={{ color: 'white' }} 
@@ -18,7 +19,7 @@ export const SearchEvent: FC = () => {
 			placeholder="OpenConf" 
 			prefix={<SearchOutlined style={{ color: "white", fontSize: 24 }} />}
 			value={search}
-			onChange={(e) => setSearch(e.target.value)}
+			onChange={(e) => onSearchChange(e.target.value)}
 		/>
 	);
 };
