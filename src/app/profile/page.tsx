@@ -11,18 +11,21 @@ const ProfilePage = () => {
   // Mock data for events
   const userEvents = [
     {
+      id: "1",
       title: "Tech Conference 2024",
       location: "Москва",
       price: 5000,
       imageUrl: "https://optim.tildacdn.com/tild6138-3133-4732-a336-316166613961/-/cover/600x600/center/center/-/format/webp/photo_2016-09-15_16-.jpg.webp"
     },
     {
+      id: "2",
       title: "Startup Meetup",
       location: "Санкт-Петербург",
       price: 0,
       imageUrl: "https://optim.tildacdn.com/tild6138-3133-4732-a336-316166613961/-/cover/600x600/center/center/-/format/webp/photo_2016-09-15_16-.jpg.webp"
     },
     {
+      id: "3",
       title: "Design Workshop",
       location: "Казань",
       price: 3000,
@@ -48,6 +51,7 @@ const ProfilePage = () => {
           {userEvents.map((event, index) => (
             <CardEvent
               key={index}
+              id={event.id}
               title={event.title}
               location={event.location}
               price={event.price}

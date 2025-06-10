@@ -12,6 +12,7 @@ const { Title } = Typography;
 // Mock data for events
 const mockEvents = [
   {
+    id: "1",
     title: "Tech Conference 2024",
     location: "Москва",
     price: 5000,
@@ -19,6 +20,7 @@ const mockEvents = [
     date: moment('2025-06-20')
   },
   {
+    id: "2",
     title: "Startup Meetup",
     location: "Санкт-Петербург",
     price: 0,
@@ -26,6 +28,7 @@ const mockEvents = [
     date: moment('2025-06-23')
   },
   {
+    id: "3",
     title: "Design Workshop",
     location: "Казань",
     price: 3000,
@@ -139,6 +142,7 @@ const CalendarPage = () => {
           renderItem={(event) => (
             <List.Item>
               <CardEvent
+                id={event.id}
                 title={event.title}
                 location={event.location}
                 price={event.price}

@@ -13,10 +13,34 @@ const Home = () => {
         <FilterEvent />
       </Flex>
       <Flex vertical style={{ padding: 4 }} gap={8}>
-        <CardEvent title="Elevate: The Conference for Professional Growth" location="Los Angeles" price={300} imageUrl="https://optim.tildacdn.com/tild6138-3133-4732-a336-316166613961/-/cover/600x600/center/center/-/format/webp/photo_2016-09-15_16-.jpg.webp" />
-        <CardEvent title="Elevate: The Conference for Professional Growth" location="Los Angeles" price={300} imageUrl="https://optim.tildacdn.com/tild6138-3133-4732-a336-316166613961/-/cover/600x600/center/center/-/format/webp/photo_2016-09-15_16-.jpg.webp" />
-        <CardEvent title="Elevate: The Conference for Professional Growth" location="Los Angeles" price={300} imageUrl="https://optim.tildacdn.com/tild6138-3133-4732-a336-316166613961/-/cover/600x600/center/center/-/format/webp/photo_2016-09-15_16-.jpg.webp" />
-        <CardEvent title="Elevate: The Conference for Professional Growth" location="Los Angeles" price={300} imageUrl="https://optim.tildacdn.com/tild6138-3133-4732-a336-316166613961/-/cover/600x600/center/center/-/format/webp/photo_2016-09-15_16-.jpg.webp" />
+        <CardEvent 
+          id="1"
+          title="Elevate: The Conference for Professional Growth" 
+          location="Los Angeles" 
+          price={300} 
+          imageUrl="https://optim.tildacdn.com/tild6138-3133-4732-a336-316166613961/-/cover/600x600/center/center/-/format/webp/photo_2016-09-15_16-.jpg.webp" 
+        />
+        <CardEvent 
+          id="2"
+          title="Elevate: The Conference for Professional Growth" 
+          location="Los Angeles" 
+          price={300} 
+          imageUrl="https://optim.tildacdn.com/tild6138-3133-4732-a336-316166613961/-/cover/600x600/center/center/-/format/webp/photo_2016-09-15_16-.jpg.webp" 
+        />
+        <CardEvent 
+          id="3"
+          title="Elevate: The Conference for Professional Growth" 
+          location="Los Angeles" 
+          price={300} 
+          imageUrl="https://optim.tildacdn.com/tild6138-3133-4732-a336-316166613961/-/cover/600x600/center/center/-/format/webp/photo_2016-09-15_16-.jpg.webp" 
+        />
+        <CardEvent 
+          id="4"
+          title="Elevate: The Conference for Professional Growth" 
+          location="Los Angeles" 
+          price={300} 
+          imageUrl="https://optim.tildacdn.com/tild6138-3133-4732-a336-316166613961/-/cover/600x600/center/center/-/format/webp/photo_2016-09-15_16-.jpg.webp" 
+        />
       </Flex>
     </Flex>
   );

@@ -3,6 +3,7 @@
 import {FC} from "react";
 import {Card, Typography, Space, Tag, Flex} from "antd";
 import {EnvironmentOutlined} from "@ant-design/icons";
+import {useRouter} from "next/navigation";
 
 const {Text, Title} = Typography;
 
@@ -11,14 +12,22 @@ interface CardEventProps {
 	location: string;
 	price: number;
 	imageUrl: string;
+	id: string;
 }
 
 export const CardEvent: FC<CardEventProps> = ({
 	title,
 	location,
 	price,
-	imageUrl
+	imageUrl,
+	id
 }) => {
+	const router = useRouter();
+
+	const handleClick = () => {
+		router.push(`/events/${id}`);
+	};
+
 	return (
 		<Card
 			size="small"
@@ -28,6 +37,8 @@ export const CardEvent: FC<CardEventProps> = ({
 				gap: '8px',
 				justifyContent: "space-between"
 			}}
+			onClick={handleClick}
+			style={{ cursor: 'pointer' }}
 		>
 			<div
 				style={{
