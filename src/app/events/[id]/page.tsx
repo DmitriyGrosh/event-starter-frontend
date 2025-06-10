@@ -4,24 +4,27 @@ import React from 'react';
 import { Card, Typography, Space, Tag, Flex, Button } from 'antd';
 import { EnvironmentOutlined, CalendarOutlined, UserOutlined } from '@ant-design/icons';
 import { useParams } from 'next/navigation';
+import { events } from '@/entities/events/model/eventsData';
+import moment from 'moment';
 
 const { Title, Text } = Typography;
 
 const EventDetailsPage = () => {
   const params = useParams();
-  const eventId = params.id;
+  const eventId = params?.id as string;
+  
+  const eventDetails = events.find(event => event.id === eventId);
 
-  // This would typically come from an API call using the eventId
-  const eventDetails = {
-    title: "Elevate: The Conference for Professional Growth",
-    location: "Los Angeles",
-    price: 300,
-    imageUrl: "https://optim.tildacdn.com/tild6138-3133-4732-a336-316166613961/-/cover/600x600/center/center/-/format/webp/photo_2016-09-15_16-.jpg.webp",
-    description: "Join us for an exciting conference focused on professional development and networking.",
-    date: "June 20, 2024",
-    organizer: "Tech Events Inc.",
-    attendees: 150
-  };
+  if (!eventDetails) {
+    return (
+      <div style={{ padding: '16px' }}>
+        <Card>
+          <Title level={2}>Event not found</Title>
+          <Text>The event you're looking for doesn't exist.</Text>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div style={{ padding: '16px' }}>
@@ -48,12 +51,7 @@ const EventDetailsPage = () => {
             
             <Space>
               <CalendarOutlined />
-              <Text>{eventDetails.date}</Text>
-            </Space>
-            
-            <Space>
-              <UserOutlined />
-              <Text>Organizer: {eventDetails.organizer}</Text>
+              <Text>{eventDetails.date?.format('MMMM D, YYYY')}</Text>
             </Space>
             
             <Text>{eventDetails.description}</Text>

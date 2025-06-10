@@ -13,6 +13,7 @@ interface CardEventProps {
 	price: number;
 	imageUrl: string;
 	id: string;
+	description: string;
 }
 
 export const CardEvent: FC<CardEventProps> = ({
@@ -20,7 +21,8 @@ export const CardEvent: FC<CardEventProps> = ({
 	location,
 	price,
 	imageUrl,
-	id
+	id,
+	description
 }) => {
 	const router = useRouter();
 
@@ -55,6 +57,9 @@ export const CardEvent: FC<CardEventProps> = ({
 				<Title level={5} style={{margin: 0, overflow: 'hidden', textOverflow: 'ellipsis'}}>
 					{title}
 				</Title>
+				<Text type="secondary" style={{fontSize: '14px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'}}>
+					{description}
+				</Text>
 				<Flex justify="space-between" align="center">
 					<Space>
 						<EnvironmentOutlined style={{color: '#8C8C8C'}}/>

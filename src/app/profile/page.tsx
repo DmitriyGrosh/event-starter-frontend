@@ -4,34 +4,13 @@ import React from 'react';
 import { Typography, Card, Avatar, Tabs, Space, Statistic, Row, Col, Flex } from 'antd';
 import { UserOutlined, CalendarOutlined, TeamOutlined } from '@ant-design/icons';
 import { CardEvent } from '@/entities/events';
+import { events } from '@/entities/events/model/eventsData';
 
 const { Title, Text } = Typography;
 
 const ProfilePage = () => {
-  // Mock data for events
-  const userEvents = [
-    {
-      id: "1",
-      title: "Tech Conference 2024",
-      location: "Москва",
-      price: 5000,
-      imageUrl: "https://optim.tildacdn.com/tild6138-3133-4732-a336-316166613961/-/cover/600x600/center/center/-/format/webp/photo_2016-09-15_16-.jpg.webp"
-    },
-    {
-      id: "2",
-      title: "Startup Meetup",
-      location: "Санкт-Петербург",
-      price: 0,
-      imageUrl: "https://optim.tildacdn.com/tild6138-3133-4732-a336-316166613961/-/cover/600x600/center/center/-/format/webp/photo_2016-09-15_16-.jpg.webp"
-    },
-    {
-      id: "3",
-      title: "Design Workshop",
-      location: "Казань",
-      price: 3000,
-      imageUrl: "https://optim.tildacdn.com/tild6138-3133-4732-a336-316166613961/-/cover/600x600/center/center/-/format/webp/photo_2016-09-15_16-.jpg.webp"
-    }
-  ];
+  // For demo purposes, we'll show the first 3 events as user's events
+  const userEvents = events.slice(0, 3);
 
   const items = [
     {
@@ -48,14 +27,15 @@ const ProfilePage = () => {
       label: 'Мероприятия',
       children: (
         <Flex vertical gap={8}>
-          {userEvents.map((event, index) => (
+          {userEvents.map((event) => (
             <CardEvent
-              key={index}
+              key={event.id}
               id={event.id}
               title={event.title}
               location={event.location}
               price={event.price}
               imageUrl={event.imageUrl}
+              description={event.description}
             />
           ))}
         </Flex>

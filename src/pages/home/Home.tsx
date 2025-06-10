@@ -4,6 +4,7 @@ import React from 'react';
 import {CardEvent, FilterEvent, SearchEvent} from "@/entities/events";
 import {Flex} from "antd";
 import {DESIGN_TOKENS} from "@/shared/const";
+import {events} from "@/entities/events/model/eventsData";
 
 const Home = () => {
   return (
@@ -13,34 +14,17 @@ const Home = () => {
         <FilterEvent />
       </Flex>
       <Flex vertical style={{ padding: 4 }} gap={8}>
-        <CardEvent 
-          id="1"
-          title="Elevate: The Conference for Professional Growth" 
-          location="Los Angeles" 
-          price={300} 
-          imageUrl="https://optim.tildacdn.com/tild6138-3133-4732-a336-316166613961/-/cover/600x600/center/center/-/format/webp/photo_2016-09-15_16-.jpg.webp" 
-        />
-        <CardEvent 
-          id="2"
-          title="Elevate: The Conference for Professional Growth" 
-          location="Los Angeles" 
-          price={300} 
-          imageUrl="https://optim.tildacdn.com/tild6138-3133-4732-a336-316166613961/-/cover/600x600/center/center/-/format/webp/photo_2016-09-15_16-.jpg.webp" 
-        />
-        <CardEvent 
-          id="3"
-          title="Elevate: The Conference for Professional Growth" 
-          location="Los Angeles" 
-          price={300} 
-          imageUrl="https://optim.tildacdn.com/tild6138-3133-4732-a336-316166613961/-/cover/600x600/center/center/-/format/webp/photo_2016-09-15_16-.jpg.webp" 
-        />
-        <CardEvent 
-          id="4"
-          title="Elevate: The Conference for Professional Growth" 
-          location="Los Angeles" 
-          price={300} 
-          imageUrl="https://optim.tildacdn.com/tild6138-3133-4732-a336-316166613961/-/cover/600x600/center/center/-/format/webp/photo_2016-09-15_16-.jpg.webp" 
-        />
+        {events.map((event) => (
+          <CardEvent 
+            key={event.id}
+            id={event.id}
+            title={event.title}
+            location={event.location}
+            price={event.price}
+            imageUrl={event.imageUrl}
+            description={event.description}
+          />
+        ))}
       </Flex>
     </Flex>
   );
