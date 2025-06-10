@@ -1,81 +1,80 @@
 'use client';
 
 import React from 'react';
-import { Card, Typography, List, Badge, Space } from 'antd';
-import { useAuth } from '@/shared/context/auth-context';
-import { BellOutlined, CalendarOutlined, UserOutlined } from '@ant-design/icons';
+import { Card, Typography, Space, Button, List, Badge, Flex } from 'antd';
+import { BellOutlined, DeleteOutlined, CheckOutlined } from '@ant-design/icons';
+import { useNotificationsStore } from '@/entities/notifications/model/notificationsData';
+import dayjs from 'dayjs';
 
 const { Title, Text } = Typography;
 
-export default function NotificationsPage() {
-  const { isAuthenticated } = useAuth();
+const NotificationsPage = () => {
+  const { notifications, markAsRead, markAllAsRead, removeNotification } = useNotificationsStore();
 
-  if (!isAuthenticated) {
-    return null; // This will be handled by middleware, but we keep it as a safety check
-  }
-
-  // Example notifications data
-  const notifications = [
-    {
-      id: 1,
-      type: 'event',
-      title: 'Новое мероприятие',
-      description: 'Завтра состоится встреча команды',
-      time: '2 часа назад',
-      read: false,
-      icon: <CalendarOutlined style={{ fontSize: '20px' }} />,
-    },
-    {
-      id: 2,
-      type: 'system',
-      title: 'Обновление профиля',
-      description: 'Ваш профиль был успешно обновлен',
-      time: '5 часов назад',
-      read: true,
-      icon: <UserOutlined style={{ fontSize: '20px' }} />,
-    },
-    {
-      id: 3,
-      type: 'reminder',
-      title: 'Напоминание',
-      description: 'Не забудьте подготовиться к завтрашней презентации',
-      time: '1 день назад',
-      read: true,
-      icon: <BellOutlined style={{ fontSize: '20px' }} />,
-    },
-  ];
+  const handleMarkAllAsRead = () => {
+    markAllAsRead();
+  };
 
   return (
-    <div style={{ padding: '24px', maxWidth: '800px', margin: '0 auto' }}>
+    <div style={{ padding: '16px' }}>
       <Card>
-        <Title level={2} style={{ marginBottom: '24px' }}>
-          Уведомления
-        </Title>
-        <List
-          itemLayout="horizontal"
-          dataSource={notifications}
-          renderItem={(item) => (
-            <List.Item>
-              <List.Item.Meta
-                avatar={
-                  <Badge dot={!item.read}>
-                    {item.icon}
-                  </Badge>
-                }
-                title={
-                  <Space>
-                    <Text strong>{item.title}</Text>
-                    <Text type="secondary" style={{ fontSize: '12px' }}>
-                      {item.time}
-                    </Text>
-                  </Space>
-                }
-                description={item.description}
-              />
-            </List.Item>
-          )}
-        />
+        <Space direction="vertical" size="large" style={{ width: '100%' }}>
+          <Flex justify="space-between" align="center">
+            <Title level={2}>Уведомления</Title>
+            <Button 
+              type="primary" 
+              icon={<CheckOutlined />}
+              onClick={handleMarkAllAsRead}
+            >
+              Отметить все как прочитанные
+            </Button>
+          </Flex>
+
+          <List
+            itemLayout="horizontal"
+            dataSource={notifications}
+            renderItem={(notification) => (
+              <List.Item
+                actions={[
+                  <Button 
+                    type="text" 
+                    icon={<CheckOutlined />} 
+                    onClick={() => markAsRead(notification.id)}
+                    disabled={notification.read}
+                  >
+                    {notification.read ? 'Прочитано' : 'Отметить как прочитанное'}
+                  </Button>,
+                  <Button 
+                    type="text" 
+                    danger 
+                    icon={<DeleteOutlined />} 
+                    onClick={() => removeNotification(notification.id)}
+                  >
+                    Удалить
+                  </Button>
+                ]}
+              >
+                <List.Item.Meta
+                  avatar={
+                    <Badge dot={!notification.read}>
+                      {notification.icon}
+                    </Badge>
+                  }
+                  title={notification.title}
+                  description={
+                    <Space direction="vertical" size="small">
+                      <Text>{notification.description}</Text>
+                      <Text type="secondary">{notification.time}</Text>
+                    </Space>
+                  }
+                />
+              </List.Item>
+            )}
+          />
+        </Space>
       </Card>
     </div>
   );
-} 
+};
+
+export default NotificationsPage; 
