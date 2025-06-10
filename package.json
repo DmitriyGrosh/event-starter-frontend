@@ -15,11 +15,13 @@
     "@reatom/persist": "^3.4.1",
     "@reatom/url": "^3.9.0",
     "antd": "^5.25.4",
+    "moment": "^2.30.1",
     "next": "^15.3.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@types/moment": "^2.13.0",
     "@types/node": "^22.15.29",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
