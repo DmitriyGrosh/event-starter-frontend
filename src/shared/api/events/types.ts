@@ -1,3 +1,13 @@
+export type Ticket = {
+	id: number;
+	name: string;
+	price: number;
+	quantity: number;
+	eventId: number;
+	createdAt: string;
+	description: string;
+}
+
 export interface Event {
   id: number;
   title: string;
@@ -12,15 +22,8 @@ export interface Event {
     name: string;
     email: string;
   };
-  tickets: {
-    id: number;
-    name: string;
-    price: number;
-    quantity: number;
-    eventId: number;
-    createdAt: string;
-    description: string;
-  }[];
+  tickets: Ticket[];
+	tags: string[]
   description: string;
   _count: {
     subscribers: number;
