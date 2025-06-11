@@ -5,3 +5,11 @@ export type EventsFilter = {
 	location: string;
 	priceRange: [number, number];
 }
+
+export interface Filters {
+    fromDate: string | null;
+    toDate: string | null;
+    tags: string[];
+    location: string | null;
+    priceRange: [number, number] | [];
+}

@@ -4,24 +4,24 @@ import React, {FC, useState, useMemo} from "react";
 import {Button, Card, Drawer, Space, DatePicker, Select, Slider, Input, AutoComplete} from "antd";
 import {FilterOutlined, CloseOutlined, EnvironmentOutlined, ClearOutlined} from "@ant-design/icons";
 import {DESIGN_TOKENS} from "@/shared/const";
-import {EventsFilter} from "@/entities/events";
+import {Filters} from "../lib/types";
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import {events} from "../model/eventsData";
 
 const { RangePicker } = DatePicker;
 
-const DEFAULT_FILTER: EventsFilter = {
+const DEFAULT_FILTER: Filters = {
 	priceRange: [0, 100],
 	location: '',
 	tags: [],
-	startedAt: null,
-	endedAt: null
+	fromDate: null,
+	toDate: null
 };
 
 interface FilterEventProps {
-	filter: EventsFilter;
-	onFilterChange: (filter: EventsFilter) => void;
+	filter: Filters;
+	onFilterChange: (filter: Filters) => void;
 }
 
 export const FilterEvent: FC<FilterEventProps> = ({ filter, onFilterChange }) => {
@@ -60,14 +60,14 @@ export const FilterEvent: FC<FilterEventProps> = ({ filter, onFilterChange }) =>
 		if (dates && dates[0] && dates[1]) {
 			onFilterChange({
 				...filter,
-				startedAt: dates[0].toDate(),
-				endedAt: dates[1].toDate()
+				fromDate: dates[0].toISOString(),
+				toDate: dates[1].toISOString()
 			});
 		} else {
 			onFilterChange({
 				...filter,
-				startedAt: null,
-				endedAt: null
+				fromDate: null,
+				toDate: null
 			});
 		}
 	};
@@ -80,8 +80,8 @@ export const FilterEvent: FC<FilterEventProps> = ({ filter, onFilterChange }) =>
 		const today = dayjs();
 		onFilterChange({
 			...filter,
-			startedAt: today.startOf('day').toDate(),
-			endedAt: today.endOf('day').toDate()
+			fromDate: today.startOf('day').toISOString(),
+			toDate: today.endOf('day').toISOString()
 		});
 	};
 
@@ -89,13 +89,13 @@ export const FilterEvent: FC<FilterEventProps> = ({ filter, onFilterChange }) =>
 		const tomorrow = dayjs().add(1, 'day');
 		onFilterChange({
 			...filter,
-			startedAt: tomorrow.startOf('day').toDate(),
-			endedAt: tomorrow.endOf('day').toDate()
+			fromDate: tomorrow.startOf('day').toISOString(),
+			toDate: tomorrow.endOf('day').toISOString()
 		});
 	};
 
-	const isToday = filter.startedAt && dayjs(filter.startedAt).isSame(dayjs(), 'day');
-	const isTomorrow = filter.startedAt && dayjs(filter.startedAt).isSame(dayjs().add(1, 'day'), 'day');
+	const isToday = filter.fromDate && dayjs(filter.fromDate).isSame(dayjs(), 'day');
+	const isTomorrow = filter.fromDate && dayjs(filter.fromDate).isSame(dayjs().add(1, 'day'), 'day');
 
 	return (
 		<>
@@ -176,7 +176,7 @@ export const FilterEvent: FC<FilterEventProps> = ({ filter, onFilterChange }) =>
 							</Button>
 							<RangePicker
 								onChange={handleDateChange}
-								value={filter.startedAt && filter.endedAt ? [dayjs(filter.startedAt), dayjs(filter.endedAt)] : null}
+								value={filter.fromDate && filter.toDate ? [dayjs(filter.fromDate), dayjs(filter.toDate)] : null}
 							/>
 						</Space>
 					</Card>

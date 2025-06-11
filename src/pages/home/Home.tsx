@@ -4,18 +4,17 @@ import React, { useRef, useCallback } from 'react';
 import { CardEvent, FilterEvent, SearchEvent } from "@/entities/events";
 import { Flex, Spin, Alert, Typography } from "antd";
 import { DESIGN_TOKENS } from "@/shared/const";
-import { EventsFilter } from '@/entities/events';
+import { Filters } from '@/entities/events/lib/types';
 import { useEvents } from '@/entities/events/model/useEvents';
-import dayjs from 'dayjs';
 
 const { Text } = Typography;
 
-const DEFAULT_FILTER: EventsFilter = {
+const DEFAULT_FILTER: Filters = {
   priceRange: [0, 100],
   location: '',
   tags: [],
-  startedAt: null,
-  endedAt: null
+  fromDate: null,
+  toDate: null
 };
 
 const Home = () => {
@@ -62,12 +61,8 @@ const Home = () => {
     );
   }
 
-  const handleFilterChange = (newFilter: EventsFilter) => {
-    updateFilters({
-      fromDate: newFilter.startedAt ? dayjs(newFilter.startedAt).toISOString() : null,
-      toDate: newFilter.endedAt ? dayjs(newFilter.endedAt).toISOString() : null,
-      tags: newFilter.tags
-    });
+  const handleFilterChange = (newFilter: Filters) => {
+    updateFilters(newFilter);
   };
 
   return (
@@ -75,16 +70,12 @@ const Home = () => {
       <Flex gap={4} align="center" style={{ background: DESIGN_TOKENS.PRIMARY, padding: "0 16px 16px 16px" }}>
         <SearchEvent search={search} onSearchChange={setSearch} />
         <FilterEvent 
-          filter={DEFAULT_FILTER} 
+          filter={filters} 
           onFilterChange={handleFilterChange} 
         />
       </Flex>
       <Flex vertical style={{ padding: 4 }} gap={8}>
         {events.map((event, index) => {
-          const lowestTicketPrice = event.tickets?.length 
-            ? Math.min(...event.tickets.map((ticket: { price: number }) => ticket.price))
-            : 0;
-
           const isLastElement = index === events.length - 1;
 
           return (
@@ -96,7 +87,7 @@ const Home = () => {
                 id={event.id.toString()}
                 title={event.title}
                 location={event.location}
-                price={lowestTicketPrice}
+                price={event.price}
                 description={event.description}
               />
             </div>

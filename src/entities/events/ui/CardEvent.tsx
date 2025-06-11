@@ -1,11 +1,8 @@
 'use client';
 
-import {FC} from "react";
 import {Card, Typography, Space, Tag, Flex} from "antd";
 import {EnvironmentOutlined} from "@ant-design/icons";
 import {useRouter} from "next/navigation";
-import { DESIGN_TOKENS } from '@/shared/const';
-import { Link } from 'react-router-dom';
 
 const {Text, Title} = Typography;
 
@@ -37,12 +34,6 @@ export const CardEvent = ({
 	return (
 		<Card
 			size="small"
-			bodyStyle={{
-				padding: '8px',
-				display: 'flex',
-				gap: '8px',
-				justifyContent: "space-between"
-			}}
 			onClick={handleClick}
 			style={{ cursor: 'pointer' }}
 		>
