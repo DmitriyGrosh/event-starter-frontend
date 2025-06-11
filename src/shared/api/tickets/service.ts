@@ -3,7 +3,9 @@ import {
   UserTicketsResponse, 
   TicketAvailability, 
   TicketTransferRequest,
-  TicketTransferResponse 
+  TicketTransferResponse,
+  TicketPurchaseRequest,
+  TicketPurchaseResponse
 } from './types';
 
 export const ticketsService = {
@@ -24,6 +26,17 @@ export const ticketsService = {
     const { data } = await api.post<TicketTransferResponse>(
       `/tickets/transfer/${ticketId}`,
       transferData
+    );
+    return data;
+  },
+
+  buyTicket: async (
+    ticketId: number,
+    purchaseData: TicketPurchaseRequest
+  ): Promise<TicketPurchaseResponse> => {
+    const { data } = await api.post<TicketPurchaseResponse>(
+      `/tickets/buy/${ticketId}`,
+      purchaseData
     );
     return data;
   }

@@ -63,4 +63,18 @@ export interface TicketTransferResponse {
   toPurchase: TicketPurchase;
 }
 
+export interface TicketPurchaseRequest {
+  quantity: number;
+}
+
+export interface TicketPurchaseResponse {
+  id: number;
+  quantity: number;
+  totalPaid: number;
+  status: string;
+  createdAt: string;
+  ticket: Ticket;
+  user: User;
+}
+
 export type UserTicketsResponse = UserTicket[]; 
