@@ -1,0 +1,76 @@
+import { useState, useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { message } from 'antd';
+import { useAuth } from '@/shared/context/auth-context';
+import { useNotificationsStore } from '@/entities/notifications/model/notificationsData';
+import { eventService } from '@/shared/api/events/service';
+import { Event } from '@/shared/api/events/types';
+
+export const useEventDetails = () => {
+  const params = useParams();
+  const router = useRouter();
+  const { isAuthenticated } = useAuth();
+  const [isRegistered, setIsRegistered] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [eventDetails, setEventDetails] = useState<Event | null>(null);
+  const { addNotification } = useNotificationsStore();
+  const eventId = params?.id as string;
+
+  useEffect(() => {
+    const fetchEventDetails = async () => {
+      try {
+        setIsLoading(true);
+        const data = await eventService.getEventById(eventId);
+        setEventDetails(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred while fetching event details');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (eventId) {
+      fetchEventDetails();
+    }
+  }, [eventId]);
+
+  const handleRegister = () => {
+    if (!isAuthenticated) {
+      message.info('Пожалуйста, войдите в систему для регистрации на мероприятие');
+      router.push('/login');
+      return;
+    }
+
+    setIsRegistered(true);
+    message.success('Успешная регистрация на мероприятие!');
+    
+    addNotification({
+      type: 'event',
+      title: 'Регистрация на мероприятие',
+      description: `Вы успешно зарегистрировались на мероприятие "${eventDetails?.title}"`,
+      time: 'Только что',
+    });
+  };
+
+  const handleUnregister = () => {
+    setIsRegistered(false);
+    message.success('Регистрация на мероприятие отменена');
+    
+    addNotification({
+      type: 'event',
+      title: 'Отмена регистрации',
+      description: `Вы отменили регистрацию на мероприятие "${eventDetails?.title}"`,
+      time: 'Только что',
+    });
+  };
+
+  return {
+    eventDetails,
+    isLoading,
+    error,
+    isRegistered,
+    handleRegister,
+    handleUnregister,
+  };
+}; 

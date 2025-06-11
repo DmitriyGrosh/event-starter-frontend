@@ -31,7 +31,7 @@ export const useFilterEvent = (initialFilter: Filters, onFilterChange: (filter: 
         fetchTags();
     }, []);
 
-    // Get unique locations from events
+    // Get unique locations from event-details
     const locationOptions = useMemo(() => {
         const uniqueLocations = Array.from(new Set(events.map(event => event.location)));
         return uniqueLocations.map(location => ({

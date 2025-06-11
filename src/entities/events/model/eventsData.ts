@@ -73,7 +73,7 @@ export const events: Event[] = [
         date: dayjs('2025-11-20'),
         tags: ['business', 'marketing']
     },
-    // Today's events
+    // Today's event-details
     {
         id: "7",
         title: "Web Development Workshop",
@@ -104,7 +104,7 @@ export const events: Event[] = [
         date: dayjs(),
         tags: ['art', 'exhibition']
     },
-    // Tomorrow's events
+    // Tomorrow's event-details
     {
         id: "10",
         title: "Mobile App Development",

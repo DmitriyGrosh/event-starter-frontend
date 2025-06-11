@@ -1,17 +1,12 @@
 'use client';
 
-import React from 'react';
-import { Typography, Card } from 'antd';
+import dynamic from 'next/dynamic';
 
-const { Title } = Typography;
+const Events = dynamic(() => import('@/pages/home/ui/Home'), {
+	ssr: false,
+	loading: () => <div>Loading...</div>
+});
 
-const EventsPage = () => {
-  return (
-    <Card>
-      <Title level={2}>Мероприятия</Title>
-      {/* Add your events content here */}
-    </Card>
-  );
-};
-
-export default EventsPage; 
+export default function Page() {
+	return <Events />;
+}

@@ -37,7 +37,7 @@ export const useEvents = (initialPage: number = 1, limit: number = 10) => {
 			setHasMore(pageNum < response.pagination.pageCount);
 			setError(null);
 		} catch (err) {
-			setError(err instanceof Error ? err : new Error('Failed to fetch events'));
+			setError(err instanceof Error ? err : new Error('Failed to fetch event-details'));
 		} finally {
 			setLoading(false);
 		}

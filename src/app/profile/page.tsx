@@ -16,7 +16,7 @@ export default function ProfilePage() {
     return null; // This will be handled by middleware, but we keep it as a safety check
   }
 
-  // For demo purposes, we'll show the first 3 events as user's events
+  // For demo purposes, we'll show the first 3 event-details as user's event-details
   const userEvents = events.slice(0, 3);
 
   const items = [
