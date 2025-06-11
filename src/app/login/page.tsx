@@ -5,7 +5,7 @@ import { Form, Input, Button, Card, Typography } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useAuth } from '@/shared/context/auth-context';
+import {useAuth} from "@/entities/viewer";
 
 const { Title } = Typography;
 

@@ -3,7 +3,7 @@ import React, {FC, PropsWithChildren, useState} from "react";
 import {MenuUnfoldOutlined, MenuFoldOutlined, UserOutlined, VideoCameraOutlined, CalendarOutlined, BellOutlined, LogoutOutlined} from "@ant-design/icons";
 import {DESIGN_TOKENS} from "@/shared/const";
 import { useRouter, usePathname } from 'next/navigation';
-import { useAuth } from '@/shared/context/auth-context';
+import {useAuth} from "@/entities/viewer";
 
 const {Content, Header, Sider} = Layout;
 

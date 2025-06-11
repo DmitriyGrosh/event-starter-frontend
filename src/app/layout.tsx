@@ -4,8 +4,8 @@ import React from "react";
 import {ConfigProvider} from 'antd';
 import {AppLayout} from "@/widgets/app-layout";
 import {DESIGN_TOKENS} from "@/shared/const";
-import { AuthProvider } from "@/shared/context/auth-context";
 import { AuthGuard } from '@/shared/lib/AuthGuard';
+import {AuthProvider} from "@/entities/viewer";
 
 import 'antd/dist/reset.css';
 import "./styles/root.css";

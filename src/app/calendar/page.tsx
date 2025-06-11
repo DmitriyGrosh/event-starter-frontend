@@ -6,7 +6,7 @@ import { CardEvent } from '@/entities/events';
 import dayjs from 'dayjs';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { events } from '@/entities/events/model/eventsData';
-import { useAuth } from '@/shared/context/auth-context';
+import {useAuth} from "@/entities/viewer";
 
 const { Title } = Typography;
 

@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { message } from 'antd';
-import { useAuth } from '@/shared/context/auth-context';
 import { eventService } from '@/shared/api/events/service';
 import { Event } from '@/shared/api/events/types';
+import {useAuth} from "@/entities/viewer";
 
 export const useEventDetails = () => {
   const params = useParams();

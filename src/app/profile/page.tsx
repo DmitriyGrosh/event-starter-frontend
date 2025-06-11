@@ -3,9 +3,9 @@
 import React from 'react';
 import { Card, Typography, Avatar, Space, Tabs, Flex, Statistic, Row, Col } from 'antd';
 import { UserOutlined, CalendarOutlined, TeamOutlined } from '@ant-design/icons';
-import { useAuth } from '@/shared/context/auth-context';
 import { CardEvent } from '@/entities/events';
 import { events } from '@/entities/events/model/eventsData';
+import {useAuth} from "@/entities/viewer";
 
 const { Title, Text } = Typography;
 

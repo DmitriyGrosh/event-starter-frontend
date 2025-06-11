@@ -1,11 +1,14 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import Cookies from 'js-cookie';
+import { authService, User, LoginRequest, RegisterRequest } from '@/shared/api/auth';
+import { AUTH_TOKEN_KEY, AUTH_USER_KEY } from '@/shared/const';
 
 interface AuthContextType {
 	isAuthenticated: boolean;
-	login: (email: string, password: string) => Promise<void>;
+	user: User | null;
+	login: (data: LoginRequest) => Promise<void>;
+	register: (data: RegisterRequest) => Promise<void>;
 	logout: () => void;
 }
 
@@ -13,32 +16,53 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	const [user, setUser] = useState<User | null>(null);
 
 	useEffect(() => {
-		// Check if user is logged in by checking cookies
-		const token = Cookies.get('auth_token');
-		setIsAuthenticated(!!token);
+		const token = localStorage.getItem(AUTH_TOKEN_KEY);
+		const storedUser = localStorage.getItem(AUTH_USER_KEY);
+
+		if (token && storedUser) {
+			setIsAuthenticated(true);
+			setUser(JSON.parse(storedUser));
+		}
 	}, []);
 
-	const login = async (email: string, password: string) => {
+	const login = async (data: LoginRequest) => {
 		try {
-			// TODO: Implement actual login API call
-			// For now, we'll just simulate a successful login
-			Cookies.set('auth_token', 'dummy_token', { expires: 7 }); // Expires in 7 days
+			const response = await authService.login(data);
+			localStorage.setItem(AUTH_TOKEN_KEY, response.token);
+			localStorage.setItem(AUTH_USER_KEY, JSON.stringify(response.user));
 			setIsAuthenticated(true);
+			setUser(response.user);
 		} catch (error) {
 			console.error('Login failed:', error);
 			throw error;
 		}
 	};
 
+	const register = async (data: RegisterRequest) => {
+		try {
+			const response = await authService.register(data);
+			localStorage.setItem(AUTH_TOKEN_KEY, response.token);
+			localStorage.setItem(AUTH_USER_KEY, JSON.stringify(response.user));
+			setIsAuthenticated(true);
+			setUser(response.user);
+		} catch (error) {
+			console.error('Registration failed:', error);
+			throw error;
+		}
+	};
+
 	const logout = () => {
-		Cookies.remove('auth_token');
+		localStorage.removeItem(AUTH_TOKEN_KEY);
+		localStorage.removeItem(AUTH_USER_KEY);
 		setIsAuthenticated(false);
+		setUser(null);
 	};
 
 	return (
-		<AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+		<AuthContext.Provider value={{ isAuthenticated, user, login, register, logout }}>
 			{children}
 		</AuthContext.Provider>
 	);
