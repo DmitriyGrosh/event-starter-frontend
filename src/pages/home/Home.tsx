@@ -1,12 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
-import {CardEvent, FilterEvent, SearchEvent} from "@/entities/events";
-import {Flex} from "antd";
-import {DESIGN_TOKENS} from "@/shared/const";
-import {events} from "@/entities/events/model/eventsData";
-import dayjs from 'dayjs';
+import React, { useRef, useCallback } from 'react';
+import { CardEvent, FilterEvent, SearchEvent } from "@/entities/events";
+import { Flex, Spin, Alert, Typography } from "antd";
+import { DESIGN_TOKENS } from "@/shared/const";
 import { EventsFilter } from '@/entities/events';
+import { useEvents } from '@/entities/events/model/useEvents';
+import dayjs from 'dayjs';
+
+const { Text } = Typography;
 
 const DEFAULT_FILTER: EventsFilter = {
   priceRange: [0, 100],
@@ -17,55 +19,104 @@ const DEFAULT_FILTER: EventsFilter = {
 };
 
 const Home = () => {
-  const [search, setSearch] = useState('');
-  const [filter, setFilter] = useState<EventsFilter>(DEFAULT_FILTER);
+  const { 
+    events, 
+    loading, 
+    error, 
+    hasMore, 
+    loadMore,
+    search,
+    setSearch,
+    filters,
+    updateFilters,
+    addTag,
+    removeTag,
+    clearFilters
+  } = useEvents(1, 10);
 
-  const filteredEvents = events.filter(event => {
-    // Search filter - match title or description
-    const searchLower = search.toLowerCase();
-    const searchMatch = search === '' || 
-      event.title.toLowerCase().includes(searchLower) ||
-      event.description.toLowerCase().includes(searchLower);
+  const observer = useRef<IntersectionObserver>();
 
-    // Price filter - only apply if range is different from default
-    const isDefaultPriceRange = filter.priceRange[0] === 0 && filter.priceRange[1] === 100;
-    const priceMatch = isDefaultPriceRange || 
-      (event.price >= filter.priceRange[0] && event.price <= filter.priceRange[1]);
+  const lastEventElementRef = useCallback((node: HTMLDivElement) => {
+    if (loading) return;
+    if (observer.current) observer.current.disconnect();
+    
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        loadMore();
+      }
+    });
 
-    // Date filter - only apply if dates are selected
-    const dateMatch = !filter.startedAt || !filter.endedAt || !event.date ? true :
-      event.date.isAfter(dayjs(filter.startedAt).startOf('day')) && 
-      event.date.isBefore(dayjs(filter.endedAt).endOf('day'));
+    if (node) observer.current.observe(node);
+  }, [loading, hasMore, loadMore]);
 
-    // Tags filter - only apply if tags are selected
-    const tagsMatch = filter.tags.length === 0 || 
-      (event.tags && filter.tags.some(tag => event.tags?.includes(tag)));
+  if (error) {
+    return (
+      <Flex justify="center" align="center" style={{ height: '100vh' }}>
+        <Alert
+          message="Error"
+          description={error.message}
+          type="error"
+          showIcon
+        />
+      </Flex>
+    );
+  }
 
-    // Location filter - only apply if location is selected
-    const locationMatch = !filter.location || 
-      event.location.toLowerCase().includes(filter.location.toLowerCase());
-
-    return searchMatch && priceMatch && dateMatch && tagsMatch && locationMatch;
-  });
+  const handleFilterChange = (newFilter: EventsFilter) => {
+    updateFilters({
+      fromDate: newFilter.startedAt ? dayjs(newFilter.startedAt).toISOString() : null,
+      toDate: newFilter.endedAt ? dayjs(newFilter.endedAt).toISOString() : null,
+      tags: newFilter.tags
+    });
+  };
 
   return (
     <Flex vertical>
       <Flex gap={4} align="center" style={{ background: DESIGN_TOKENS.PRIMARY, padding: "0 16px 16px 16px" }}>
         <SearchEvent search={search} onSearchChange={setSearch} />
-        <FilterEvent filter={filter} onFilterChange={setFilter} />
+        <FilterEvent 
+          filter={DEFAULT_FILTER} 
+          onFilterChange={handleFilterChange} 
+        />
       </Flex>
       <Flex vertical style={{ padding: 4 }} gap={8}>
-        {filteredEvents.map((event) => (
-          <CardEvent 
-            key={event.id}
-            id={event.id}
-            title={event.title}
-            location={event.location}
-            price={event.price}
-            imageUrl={event.imageUrl}
-            description={event.description}
-          />
-        ))}
+        {events.map((event, index) => {
+          const lowestTicketPrice = event.tickets?.length 
+            ? Math.min(...event.tickets.map((ticket: { price: number }) => ticket.price))
+            : 0;
+
+          const isLastElement = index === events.length - 1;
+
+          return (
+            <div
+              key={event.id}
+              ref={isLastElement ? lastEventElementRef : undefined}
+            >
+              <CardEvent 
+                id={event.id.toString()}
+                title={event.title}
+                location={event.location}
+                price={lowestTicketPrice}
+                description={event.description}
+              />
+            </div>
+          );
+        })}
+        {loading && (
+          <Flex justify="center" style={{ padding: '20px 0' }}>
+            <Spin size="large" />
+          </Flex>
+        )}
+        {!loading && !hasMore && events.length > 0 && (
+          <Flex justify="center" style={{ padding: '20px 0' }}>
+            <Text type="secondary">No more events to load</Text>
+          </Flex>
+        )}
+        {!loading && events.length === 0 && (
+          <Flex justify="center" style={{ padding: '20px 0' }}>
+            <Text type="secondary">No events found</Text>
+          </Flex>
+        )}
       </Flex>
     </Flex>
   );

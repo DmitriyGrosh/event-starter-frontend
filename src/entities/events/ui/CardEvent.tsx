@@ -4,26 +4,30 @@ import {FC} from "react";
 import {Card, Typography, Space, Tag, Flex} from "antd";
 import {EnvironmentOutlined} from "@ant-design/icons";
 import {useRouter} from "next/navigation";
+import { DESIGN_TOKENS } from '@/shared/const';
+import { Link } from 'react-router-dom';
 
 const {Text, Title} = Typography;
 
 interface CardEventProps {
+	id: string;
 	title: string;
 	location: string;
 	price: number;
-	imageUrl: string;
-	id: string;
 	description: string;
+	imageUrl?: string;
 }
 
-export const CardEvent: FC<CardEventProps> = ({
+const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=600&auto=format&fit=crop";
+
+export const CardEvent = ({
 	title,
 	location,
 	price,
-	imageUrl,
+	imageUrl = DEFAULT_IMAGE,
 	id,
 	description
-}) => {
+}: CardEventProps) => {
 	const router = useRouter();
 
 	const handleClick = () => {
@@ -68,7 +72,7 @@ export const CardEvent: FC<CardEventProps> = ({
 						</Text>
 					</Space>
 					<Tag color="blue" style={{margin: 0}}>
-						{price === 0 ? 'Бесплатно' : `${price.toLocaleString('ru-RU')}₽`}
+						{price === 0 ? 'Free' : `$${price}`}
 					</Tag>
 				</Flex>
 			</Space>
