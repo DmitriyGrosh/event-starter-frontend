@@ -1,12 +1,14 @@
+'use client';
+
 import React from 'react';
 import { Card, Typography, Space, Tag, Flex, Button, Popconfirm, Spin, Alert } from 'antd';
 import { EnvironmentOutlined, CalendarOutlined } from '@ant-design/icons';
-import { useEventDetails } from '../model/useEventDetails';
+import { useEventDetails } from '@/entities/events';
 import dayjs from 'dayjs';
 
 const { Title, Text } = Typography;
 
-const EventDetails: React.FC = () => {
+const EventDetails = () => {
 	const { eventDetails, isLoading, error, isRegistered, handleRegister, handleUnregister } = useEventDetails();
 
 	if (isLoading) {
@@ -108,4 +110,4 @@ const EventDetails: React.FC = () => {
 	);
 };
 
-export default EventDetails;
+export default EventDetails; 
