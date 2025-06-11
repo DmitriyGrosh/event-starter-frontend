@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { eventService, Event } from '@/shared/api/events';
-import { Filters } from '../lib/types';
+import { Filters, DEFAULT_FILTER } from '../lib';
 
 export const useEvents = (initialPage: number = 1, limit: number = 10) => {
 	const [events, setEvents] = useState<Event[]>([]);
@@ -9,14 +9,7 @@ export const useEvents = (initialPage: number = 1, limit: number = 10) => {
 	const [page, setPage] = useState(initialPage);
 	const [hasMore, setHasMore] = useState(true);
 	const [search, setSearch] = useState('');
-	const [filters, setFilters] = useState<Filters>({
-		fromDate: null,
-		toDate: null,
-		tags: [],
-		location: null,
-		minPrice: null,
-		maxPrice: null
-	});
+	const [filters, setFilters] = useState<Filters>(DEFAULT_FILTER);
 
 	const fetchEvents = async (pageNum: number) => {
 		try {

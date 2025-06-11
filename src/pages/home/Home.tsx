@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useRef, useCallback } from 'react';
-import { CardEvent, FilterEvent, SearchEvent, Filters, useEvents } from "@/entities/events";
+import { CardEvent, SearchEvent, Filters, useEvents } from "@/entities/events";
 import { Flex, Spin, Alert, Typography } from "antd";
 import { DESIGN_TOKENS } from "@/shared/const";
+import {FilterEvent} from "@/features/filter-events";
 
 const { Text } = Typography;
 
@@ -56,7 +57,7 @@ const Home = () => {
     <Flex vertical>
       <Flex gap={4} align="center" style={{ background: DESIGN_TOKENS.PRIMARY, padding: "0 16px 16px 16px" }}>
         <SearchEvent search={search} onSearchChange={setSearch} />
-        <FilterEvent 
+        <FilterEvent
           filter={filters} 
           onFilterChange={handleFilterChange} 
         />
