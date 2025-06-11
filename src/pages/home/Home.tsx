@@ -1,21 +1,11 @@
 'use client';
 
 import React, { useRef, useCallback } from 'react';
-import { CardEvent, FilterEvent, SearchEvent } from "@/entities/events";
+import { CardEvent, FilterEvent, SearchEvent, Filters, useEvents } from "@/entities/events";
 import { Flex, Spin, Alert, Typography } from "antd";
 import { DESIGN_TOKENS } from "@/shared/const";
-import { Filters } from '@/entities/events/lib/types';
-import { useEvents } from '@/entities/events/model/useEvents';
 
 const { Text } = Typography;
-
-const DEFAULT_FILTER: Filters = {
-  priceRange: [0, 100],
-  location: '',
-  tags: [],
-  fromDate: null,
-  toDate: null
-};
 
 const Home = () => {
   const { 
@@ -28,9 +18,6 @@ const Home = () => {
     setSearch,
     filters,
     updateFilters,
-    addTag,
-    removeTag,
-    clearFilters
   } = useEvents(1, 10);
 
   const observer = useRef<IntersectionObserver>();

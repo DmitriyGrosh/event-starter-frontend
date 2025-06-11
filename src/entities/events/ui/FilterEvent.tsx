@@ -1,18 +1,19 @@
 'use client';
 
-import React, {FC, useState, useMemo} from "react";
+import React, {FC, useState, useMemo, useEffect} from "react";
 import {Button, Card, Drawer, Space, DatePicker, Select, Slider, Input, AutoComplete} from "antd";
-import {FilterOutlined, CloseOutlined, EnvironmentOutlined, ClearOutlined} from "@ant-design/icons";
+import {FilterOutlined, EnvironmentOutlined, ClearOutlined} from "@ant-design/icons";
 import {DESIGN_TOKENS} from "@/shared/const";
 import {Filters} from "../lib/types";
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
-import {events} from "../model/eventsData";
+import {events} from "@/entities/events";
 
 const { RangePicker } = DatePicker;
 
 const DEFAULT_FILTER: Filters = {
-	priceRange: [0, 100],
+	minPrice: null,
+	maxPrice: null,
 	location: '',
 	tags: [],
 	fromDate: null,
@@ -26,6 +27,12 @@ interface FilterEventProps {
 
 export const FilterEvent: FC<FilterEventProps> = ({ filter, onFilterChange }) => {
 	const [isOpen, setIsOpen] = useState(false);
+	const [searchValue, setSearchValue] = useState('');
+	const [tempFilters, setTempFilters] = useState<Filters>(filter);
+
+	useEffect(() => {
+		setTempFilters(filter);
+	}, [filter]);
 
 	// Get unique locations from events
 	const locationOptions = useMemo(() => {
@@ -37,65 +44,86 @@ export const FilterEvent: FC<FilterEventProps> = ({ filter, onFilterChange }) =>
 	}, []);
 
 	const handleClose = () => {
+		setTempFilters(filter);
+		setSearchValue(filter.location || '');
 		setIsOpen(false);
 	};
 
 	const handleApplyFilters = () => {
+		onFilterChange(tempFilters);
 		setIsOpen(false);
 	};
 
 	const handleClearFilters = () => {
+		setTempFilters(DEFAULT_FILTER);
+		setSearchValue('');
 		onFilterChange(DEFAULT_FILTER);
 	};
 
 	const handleTagsChange = (tags: string[]) => {
-		onFilterChange({ ...filter, tags });
+		setTempFilters(prev => ({ ...prev, tags }));
 	};
 
 	const handleLocationChange = (value: string) => {
-		onFilterChange({ ...filter, location: value });
+		setSearchValue(value);
+		setTempFilters(prev => ({ ...prev, location: value }));
+	};
+
+	const handleLocationSelect = (value: string) => {
+		setSearchValue(value);
+		setTempFilters(prev => ({ ...prev, location: value }));
 	};
 
 	const handleDateChange = (dates: [Dayjs | null, Dayjs | null] | null) => {
-		if (dates && dates[0] && dates[1]) {
-			onFilterChange({
-				...filter,
-				fromDate: dates[0].toISOString(),
-				toDate: dates[1].toISOString()
-			});
+		if (dates?.[0] && dates?.[1]) {
+			setTempFilters(prev => ({
+				...prev,
+				fromDate: dates[0]?.toISOString() ?? null,
+				toDate: dates[1]?.toISOString() ?? null
+			}));
 		} else {
-			onFilterChange({
-				...filter,
+			setTempFilters(prev => ({
+				...prev,
 				fromDate: null,
 				toDate: null
-			});
+			}));
 		}
 	};
 
 	const handlePriceChange = (value: [number, number]) => {
-		onFilterChange({ ...filter, priceRange: value });
+		setTempFilters(prev => ({ 
+			...prev, 
+			minPrice: value[0],
+			maxPrice: value[1]
+		}));
 	};
 
 	const handleTodayClick = () => {
 		const today = dayjs();
-		onFilterChange({
-			...filter,
+		setTempFilters(prev => ({
+			...prev,
 			fromDate: today.startOf('day').toISOString(),
 			toDate: today.endOf('day').toISOString()
-		});
+		}));
 	};
 
 	const handleTomorrowClick = () => {
 		const tomorrow = dayjs().add(1, 'day');
-		onFilterChange({
-			...filter,
+		setTempFilters(prev => ({
+			...prev,
 			fromDate: tomorrow.startOf('day').toISOString(),
 			toDate: tomorrow.endOf('day').toISOString()
-		});
+		}));
 	};
 
-	const isToday = filter.fromDate && dayjs(filter.fromDate).isSame(dayjs(), 'day');
-	const isTomorrow = filter.fromDate && dayjs(filter.fromDate).isSame(dayjs().add(1, 'day'), 'day');
+	const isToday = tempFilters.fromDate && dayjs(tempFilters.fromDate).isSame(dayjs(), 'day');
+	const isTomorrow = tempFilters.fromDate && dayjs(tempFilters.fromDate).isSame(dayjs().add(1, 'day'), 'day');
+
+	const filteredOptions = useMemo(() => {
+		return locationOptions.filter(option => 
+			option.value.toLowerCase().includes(searchValue.toLowerCase())
+		);
+	}, [locationOptions, searchValue]);
 
 	return (
 		<>
@@ -133,7 +161,7 @@ export const FilterEvent: FC<FilterEventProps> = ({ filter, onFilterChange }) =>
 							mode="multiple"
 							style={{ width: '100%' }}
 							placeholder="Выберите категории"
-							value={filter.tags}
+							value={tempFilters.tags}
 							onChange={handleTagsChange}
 							options={[
 								{ value: 'tech', label: 'Технологии' },
@@ -147,10 +175,10 @@ export const FilterEvent: FC<FilterEventProps> = ({ filter, onFilterChange }) =>
 					<Card size="small" title="Местоположение">
 						<AutoComplete
 							style={{ width: '100%' }}
-							options={locationOptions}
-							value={filter.location}
+							options={filteredOptions}
+							value={searchValue}
 							onChange={handleLocationChange}
-							placeholder="Введите город"
+							onSelect={handleLocationSelect}
 							allowClear
 						>
 							<Input
@@ -176,7 +204,7 @@ export const FilterEvent: FC<FilterEventProps> = ({ filter, onFilterChange }) =>
 							</Button>
 							<RangePicker
 								onChange={handleDateChange}
-								value={filter.fromDate && filter.toDate ? [dayjs(filter.fromDate), dayjs(filter.toDate)] : null}
+								value={tempFilters.fromDate && tempFilters.toDate ? [dayjs(tempFilters.fromDate), dayjs(tempFilters.toDate)] : null}
 							/>
 						</Space>
 					</Card>
@@ -185,8 +213,11 @@ export const FilterEvent: FC<FilterEventProps> = ({ filter, onFilterChange }) =>
 						<Slider
 							range
 							min={0}
-							max={100}
-							value={filter.priceRange}
+							max={10000}
+							value={[
+								tempFilters.minPrice ?? 0,
+								tempFilters.maxPrice ?? 10000
+							]}
 							onChange={(value) => handlePriceChange(value as [number, number])}
 						/>
 					</Card>

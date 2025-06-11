@@ -14,7 +14,8 @@ export const useEvents = (initialPage: number = 1, limit: number = 10) => {
 		toDate: null,
 		tags: [],
 		location: null,
-		priceRange: []
+		minPrice: null,
+		maxPrice: null
 	});
 
 	const fetchEvents = async (pageNum: number) => {
@@ -24,11 +25,14 @@ export const useEvents = (initialPage: number = 1, limit: number = 10) => {
 				page: pageNum,
 				limit,
 				sortBy: 'dateStart',
-				order: 'asc',
+				order: 'desc',
 				search: search || undefined,
 				fromDate: filters.fromDate || undefined,
 				toDate: filters.toDate || undefined,
-				tags: filters.tags.length > 0 ? filters.tags : undefined
+				tags: filters.tags.length > 0 ? filters.tags : undefined,
+				location: filters.location || undefined,
+				minPrice: filters.minPrice || undefined,
+				maxPrice: filters.maxPrice || undefined
 			});
 
 			if (pageNum === 1) {
@@ -75,32 +79,6 @@ export const useEvents = (initialPage: number = 1, limit: number = 10) => {
 		setFilters(prev => ({ ...prev, ...newFilters }));
 	};
 
-	const addTag = (tag: string) => {
-		if (!filters.tags.includes(tag)) {
-			setFilters(prev => ({
-				...prev,
-				tags: [...prev.tags, tag]
-			}));
-		}
-	};
-
-	const removeTag = (tagToRemove: string) => {
-		setFilters(prev => ({
-			...prev,
-			tags: prev.tags.filter(tag => tag !== tagToRemove)
-		}));
-	};
-
-	const clearFilters = () => {
-		setFilters({
-			fromDate: null,
-			toDate: null,
-			tags: [],
-			location: null,
-			priceRange: []
-		});
-	};
-
 	const clearSearch = () => {
 		setSearch('');
 	};
@@ -118,8 +96,5 @@ export const useEvents = (initialPage: number = 1, limit: number = 10) => {
 		// Filters related
 		filters,
 		updateFilters,
-		addTag,
-		removeTag,
-		clearFilters
 	};
 };

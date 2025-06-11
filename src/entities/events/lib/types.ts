@@ -11,5 +11,6 @@ export interface Filters {
     toDate: string | null;
     tags: string[];
     location: string | null;
-    priceRange: [number, number] | [];
+    minPrice: number | null;
+    maxPrice: number | null;
 }

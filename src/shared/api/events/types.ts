@@ -38,12 +38,15 @@ export interface EventsResponse {
 }
 
 export interface EventsQueryParams {
-  search?: string;
   page?: number;
   limit?: number;
   sortBy?: string;
   order?: 'asc' | 'desc';
+  search?: string;
   fromDate?: string;
   toDate?: string;
   tags?: string[];
+  minPrice?: number;
+  maxPrice?: number;
+  location?: string;
 } 
