@@ -1,23 +1,63 @@
 'use client';
 
-import React from 'react';
-import { Card, Typography, Avatar, Space, Tabs, Flex, Statistic, Row, Col } from 'antd';
-import { UserOutlined, CalendarOutlined, TeamOutlined } from '@ant-design/icons';
+import React, { useEffect } from 'react';
+import { Card, Typography, Avatar, Space, Tabs, Flex, Statistic, Row, Col, Spin } from 'antd';
+import { UserOutlined, CalendarOutlined, TeamOutlined, TagOutlined } from '@ant-design/icons';
 import { CardEvent } from '@/entities/events';
-import { events } from '@/entities/events/model/eventsData';
-import {useAuth} from "@/entities/viewer";
+import { useAuth } from "@/entities/viewer";
+import { useProfileStore } from '@/entities/profile/model/profileModel';
+import { UserEvent } from '@/shared/api/users/types';
+import { TicketList } from '@/entities/tickets';
 
 const { Title, Text } = Typography;
 
 export default function ProfilePage() {
   const { isAuthenticated } = useAuth();
+  const { user, ownedEvents, subscribedEvents, isLoading, error, init } = useProfileStore();
+
+  useEffect(() => {
+    init();
+  }, [init]);
 
   if (!isAuthenticated) {
     return null; // This will be handled by middleware, but we keep it as a safety check
   }
 
-  // For demo purposes, we'll show the first 3 event-details as user's event-details
-  const userEvents = events.slice(0, 3);
+  if (isLoading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
+        <Spin size="large" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ padding: '20px' }}>
+        <Text type="danger">Error: {error}</Text>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div style={{ padding: '20px' }}>
+        <Text>No user data available</Text>
+      </div>
+    );
+  }
+
+  const renderEventCard = (event: UserEvent) => (
+    <CardEvent
+      key={event.id}
+      id={event.id.toString()}
+      title={event.title}
+      location="Location not available"
+      price={0}
+      description={event.description}
+      imageUrl={undefined}
+    />
+  );
 
   const items = [
     {
@@ -28,47 +68,51 @@ export default function ProfilePage() {
           <Space direction="vertical" style={{ width: '100%' }}>
             <div>
               <Text strong>Email:</Text>
-              <Text> user@example.com</Text>
+              <Text> {user.email}</Text>
             </div>
             <div>
-              <Text strong>Имя:</Text>
-              <Text> Иван Иванов</Text>
+              <Text strong>Name:</Text>
+              <Text> {user.name}</Text>
             </div>
             <div>
-              <Text strong>Дата регистрации:</Text>
-              <Text> 01.01.2024</Text>
+              <Text strong>Registration Date:</Text>
+              <Text> {new Date(user.createdAt).toLocaleDateString()}</Text>
             </div>
           </Space>
         </Card>
       ),
     },
     {
-      key: 'events',
-      label: 'Мероприятия',
+      key: 'owned',
+      label: 'Созданные мероприятия',
       children: (
         <Flex vertical gap={8}>
-          {userEvents.map((event) => (
-            <CardEvent
-              key={event.id}
-              id={event.id}
-              title={event.title}
-              location={event.location}
-              price={event.price}
-              imageUrl={event.imageUrl}
-              description={event.description}
-            />
-          ))}
+          {ownedEvents.length > 0 ? (
+            ownedEvents.map(renderEventCard)
+          ) : (
+            <Text>У вас пока нет созданных мероприятий</Text>
+          )}
         </Flex>
       ),
     },
     {
-      key: 'reviews',
-      label: 'Отзывы',
+      key: 'subscribed',
+      label: 'Подписки',
       children: (
-        <Card>
-          <Text>Отзывы будут здесь</Text>
-        </Card>
+        <Flex vertical gap={8}>
+          {subscribedEvents.length > 0 ? (
+            subscribedEvents.map(renderEventCard)
+          ) : (
+            <Text>У вас пока нет подписок на мероприятия</Text>
+          )}
+        </Flex>
       ),
+    },
+    {
+      key: 'tickets',
+      label: 'Билеты',
+      icon: <TagOutlined />,
+      children: <TicketList />,
     },
   ];
 
@@ -86,15 +130,15 @@ export default function ProfilePage() {
           <Row gutter={16} justify="center">
             <Col>
               <Statistic
-                title="Мероприятия"
-                value={userEvents.length}
+                title="Созданные мероприятия"
+                value={ownedEvents.length}
                 prefix={<CalendarOutlined />}
               />
             </Col>
             <Col>
               <Statistic
-                title="Подписчики"
-                value={0}
+                title="Подписки"
+                value={subscribedEvents.length}
                 prefix={<TeamOutlined />}
               />
             </Col>
