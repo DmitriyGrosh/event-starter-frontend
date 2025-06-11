@@ -2,10 +2,11 @@
 
 import {useEventDetails} from "@/entities/events";
 import {Alert, Button, Card, Flex, Popconfirm, Space, Spin, Tag, Typography, Divider, message, InputNumber} from "antd";
-import {CalendarOutlined, EnvironmentOutlined, UserOutlined, TagOutlined, ShoppingOutlined} from "@ant-design/icons";
+import {CalendarOutlined, EnvironmentOutlined, UserOutlined, TagOutlined, ShoppingOutlined, HeartOutlined, HeartFilled} from "@ant-design/icons";
 import dayjs from "dayjs";
 import {ticketsService} from "@/shared/api/tickets/service";
-import {useState} from "react";
+import {useState, useEffect} from "react";
+import {useSubscriptionStore} from "@/entities/subscriptions";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -13,6 +14,34 @@ export default function Page() {
 	const { eventDetails, isLoading, error, refetch } = useEventDetails();
 	const [purchasingTicketId, setPurchasingTicketId] = useState<number | null>(null);
 	const [ticketQuantities, setTicketQuantities] = useState<Record<number, number>>({});
+	const { subscriptions, subscribe, unsubscribe, init: initSubscriptions } = useSubscriptionStore();
+	const [isSubscribed, setIsSubscribed] = useState(false);
+
+	useEffect(() => {
+		initSubscriptions();
+	}, [initSubscriptions]);
+
+	useEffect(() => {
+		if (eventDetails && subscriptions) {
+			const isUserSubscribed = subscriptions.some(sub => sub.event.id === eventDetails.id);
+			setIsSubscribed(isUserSubscribed);
+		}
+	}, [eventDetails, subscriptions]);
+
+	const handleSubscribe = async () => {
+		if (!eventDetails) return;
+		try {
+			if (isSubscribed) {
+				await unsubscribe(eventDetails.id);
+				message.success('Вы отписались от мероприятия');
+			} else {
+				await subscribe(eventDetails.id);
+				message.success('Вы подписались на мероприятие');
+			}
+		} catch (error) {
+			message.error('Произошла ошибка при изменении подписки');
+		}
+	};
 
 	const handleBuyTicket = async (ticketId: number) => {
 		try {
@@ -110,7 +139,16 @@ export default function Page() {
 						}}
 					/>
 
-					<Title level={2}>{eventDetails.title}</Title>
+					<Flex justify="space-between" align="center">
+						<Title level={2}>{eventDetails.title}</Title>
+						<Button
+							type={isSubscribed ? "primary" : "default"}
+							icon={isSubscribed ? <HeartFilled /> : <HeartOutlined />}
+							onClick={handleSubscribe}
+						>
+							{isSubscribed ? 'Отписаться' : 'Подписаться'}
+						</Button>
+					</Flex>
 
 					<Space direction="vertical" size="middle">
 						<Space>
