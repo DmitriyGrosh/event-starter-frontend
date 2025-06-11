@@ -1,15 +1,18 @@
 'use client'
 
 import React from 'react';
-import { Form, Input, Button, Card, Typography } from 'antd';
+import { Form, Input, Button, Card, Typography, message } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useAuth } from '@/shared/context/auth-context';
 
 const { Title } = Typography;
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { register } = useAuth();
+  const [messageApi, contextHolder] = message.useMessage();
 
   const onFinish = async (values: { 
     name: string;
@@ -18,11 +21,17 @@ export default function RegisterPage() {
     confirmPassword: string;
   }) => {
     try {
-      // TODO: Implement registration logic here
-      console.log('Register values:', values);
-      router.push('/login');
+      await register({
+        name: values.name,
+        email: values.email,
+        password: values.password
+      });
+      
+      messageApi.success('Registration successful!');
+      router.push('/');
     } catch (error) {
       console.error('Registration failed:', error);
+      messageApi.error('Registration failed. Please try again.');
     }
   };
 
@@ -34,6 +43,7 @@ export default function RegisterPage() {
       minHeight: '100vh',
       background: '#f0f2f5'
     }}>
+      {contextHolder}
       <Card style={{ width: 400, padding: '24px' }}>
         <Title level={2} style={{ textAlign: 'center', marginBottom: '24px' }}>
           Register

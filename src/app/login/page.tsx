@@ -15,7 +15,7 @@ export default function LoginPage() {
 
   const onFinish = async (values: { email: string; password: string }) => {
     try {
-      await login(values.email, values.password);
+      await login({ email: values.email, password: values.password });
       router.push('/');
     } catch (error) {
       console.error('Login failed:', error);

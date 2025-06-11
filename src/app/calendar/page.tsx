@@ -1,14 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Typography, Card, Flex, Badge, List, Row, Col, Button, Calendar } from 'antd';
+import React, { useState } from 'react';
+import { Typography, Card, Flex, Badge, List, Row, Col, Button } from 'antd';
 import { CardEvent } from '@/entities/events';
-import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { events } from '@/entities/events/model/eventsData';
 import { useAuth } from '@/shared/context/auth-context';
-import type { Moment } from 'moment';
 
 const { Title } = Typography;
 

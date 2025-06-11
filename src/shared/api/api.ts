@@ -1,6 +1,6 @@
 import axios from 'axios';
-
-const API_BASE_URL = 'http://localhost:5002/api';
+import { API_BASE_URL, AUTH_HEADER, AUTH_TOKEN_PREFIX } from '@/shared/const';
+import { getAuthHeader } from '@/shared/lib/auth';
 
 export const api = axios.create({
     baseURL: API_BASE_URL,
@@ -12,10 +12,9 @@ export const api = axios.create({
 // Add request interceptor for authentication if needed
 api.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token');
-
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+        const authHeader = getAuthHeader();
+        if (authHeader[AUTH_HEADER]) {
+            config.headers[AUTH_HEADER] = authHeader[AUTH_HEADER];
         }
         return config;
     },

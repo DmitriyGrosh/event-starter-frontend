@@ -1,7 +1,6 @@
 import { BellOutlined, CalendarOutlined, UserOutlined } from '@ant-design/icons';
-import { NotificationType } from './types';
 
-export const getIconByType = (type: NotificationType) => {
+export const getIconByType = (type: string) => {
   switch (type) {
     case 'event':
       return <CalendarOutlined style={{ fontSize: '20px' }} />;
