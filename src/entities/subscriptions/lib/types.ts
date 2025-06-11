@@ -1,7 +1,7 @@
-import { Subscription } from '@/shared/api/subscriptions/types';
+import { UserSubscription } from '@/shared/api/subscriptions/types';
 
 export interface SubscriptionState {
-  subscriptions: Subscription[];
+  subscriptions: UserSubscription[];
   isLoading: boolean;
   error: string | null;
   init: () => Promise<void>;
