@@ -1,5 +1,5 @@
 import { BellOutlined, CalendarOutlined, UserOutlined } from '@ant-design/icons';
-import { NotificationType } from '../model/types';
+import { NotificationType } from './types';
 
 export const getIconByType = (type: NotificationType) => {
   switch (type) {

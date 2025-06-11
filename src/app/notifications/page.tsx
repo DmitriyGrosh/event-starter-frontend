@@ -1,19 +1,18 @@
 'use client';
 
-import React from 'react';
-import { Card, Typography, Space, Button, List, Badge, Flex } from 'antd';
-import { BellOutlined, DeleteOutlined, CheckOutlined } from '@ant-design/icons';
-import { useNotificationsStore } from '@/entities/notifications/model/notificationsData';
-import dayjs from 'dayjs';
+import React, {useEffect} from 'react';
+import { Card, Typography, Space, Button, List, Flex } from 'antd';
+import { DeleteOutlined, CheckOutlined } from '@ant-design/icons';
+import { useNotificationsStore } from '@/entities/notifications';
 
 const { Title, Text } = Typography;
 
 const NotificationsPage = () => {
-  const { notifications, markAsRead, markAllAsRead, removeNotification } = useNotificationsStore();
+  const { notifications, markAsRead, fetchData } = useNotificationsStore();
 
-  const handleMarkAllAsRead = () => {
-    markAllAsRead();
-  };
+	useEffect(() => {
+		fetchData();
+	}, [fetchData]);
 
   return (
     <div style={{ padding: '16px' }}>
@@ -24,7 +23,6 @@ const NotificationsPage = () => {
             <Button 
               type="primary" 
               icon={<CheckOutlined />}
-              onClick={handleMarkAllAsRead}
             >
               Отметить все как прочитанные
             </Button>
@@ -47,24 +45,18 @@ const NotificationsPage = () => {
                   <Button 
                     type="text" 
                     danger 
-                    icon={<DeleteOutlined />} 
-                    onClick={() => removeNotification(notification.id)}
+                    icon={<DeleteOutlined />}
                   >
                     Удалить
                   </Button>
                 ]}
               >
                 <List.Item.Meta
-                  avatar={
-                    <Badge dot={!notification.read}>
-                      {notification.icon}
-                    </Badge>
-                  }
                   title={notification.title}
                   description={
                     <Space direction="vertical" size="small">
-                      <Text>{notification.description}</Text>
-                      <Text type="secondary">{notification.time}</Text>
+                      <Text>{notification.title}</Text>
+                      <Text type="secondary">{notification.message}</Text>
                     </Space>
                   }
                 />

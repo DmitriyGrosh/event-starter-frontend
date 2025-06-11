@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { message } from 'antd';
 import { useAuth } from '@/shared/context/auth-context';
-import { useNotificationsStore } from '@/entities/notifications/model/notificationsData';
 import { eventService } from '@/shared/api/events/service';
 import { Event } from '@/shared/api/events/types';
 
@@ -14,7 +13,6 @@ export const useEventDetails = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [eventDetails, setEventDetails] = useState<Event | null>(null);
-  const { addNotification } = useNotificationsStore();
   const eventId = params?.id as string;
 
   useEffect(() => {
@@ -44,25 +42,11 @@ export const useEventDetails = () => {
 
     setIsRegistered(true);
     message.success('Успешная регистрация на мероприятие!');
-    
-    addNotification({
-      type: 'event',
-      title: 'Регистрация на мероприятие',
-      description: `Вы успешно зарегистрировались на мероприятие "${eventDetails?.title}"`,
-      time: 'Только что',
-    });
   };
 
   const handleUnregister = () => {
     setIsRegistered(false);
     message.success('Регистрация на мероприятие отменена');
-    
-    addNotification({
-      type: 'event',
-      title: 'Отмена регистрации',
-      description: `Вы отменили регистрацию на мероприятие "${eventDetails?.title}"`,
-      time: 'Только что',
-    });
   };
 
   return {
