@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  frontend:
+    image: ghcr.io/dmitriygrosh/event-starter-frontend:${IMAGE_TAG}
+    container_name: event-starter-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+    restart: unless-stopped
