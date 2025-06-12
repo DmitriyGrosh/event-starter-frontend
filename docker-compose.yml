@@ -10,6 +10,7 @@ services:
       - '3000'
     networks:
       - app-network
+      - event-starter-shared
 
   nginx:
     image: nginx:alpine
@@ -24,7 +25,10 @@ services:
       - app
     networks:
       - app-network
+      - event-starter-shared
 
 networks:
   app-network:
     driver: bridge
+  event-starter-shared:
+    external: true
