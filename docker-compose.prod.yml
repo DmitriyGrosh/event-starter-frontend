@@ -8,3 +8,9 @@ services:
     environment:
       NODE_ENV: production
     restart: unless-stopped
+    networks:
+      - event-starter-network
+
+networks:
+  event-starter-network:
+    external: true
