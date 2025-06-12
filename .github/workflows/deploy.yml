@@ -34,7 +34,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' }}
-          tags: ghcr.io/dmitriygrosh/event-starter-frontend:latest
+          tags: ghcr.io/dmitriygrosh/event-starter-frontend:${{ github.sha }}
 
   deploy:
     needs: build-and-push
@@ -67,7 +67,7 @@ jobs:
 
       - name: Deploy compose config
         env:
-          IMAGE_TAG: latest
+          IMAGE_TAG: ${{ github.sha }}
           DOCKER_HOST: ssh://${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }}
         run: |
           docker compose --file docker-compose.prod.yml up --detach --wait --remove-orphans
