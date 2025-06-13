@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { Card, Form, Input, Button, DatePicker, InputNumber, Space, Typography, message, Spin } from 'antd';
-import { useRouter } from 'next/navigation';
+import {useParams, useRouter} from 'next/navigation';
 import { useAuth } from '@/entities/viewer';
 import { eventService } from '@/shared/api/events';
-import { CreateEventRequest, UpdateEventRequest } from '@/shared/api/events/types';
+import { UpdateEventRequest } from '@/shared/api/events/types';
 import dayjs from 'dayjs';
 
 const { Title } = Typography;
@@ -25,17 +25,19 @@ interface EventFormData {
   }[];
 }
 
-export default function EditEventPage({ params }: { params: { id: string } }) {
+export default function EditEventPage() {
+  const params = useParams();
   const router = useRouter();
   const { isAuthenticated } = useAuth();
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
+  const id = params?.id as string;
 
   React.useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const event = await eventService.getEventById(params.id);
+        const event = await eventService.getEventById(id);
         form.setFieldsValue({
           title: event.title,
           description: event.description,
@@ -59,7 +61,7 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
     if (isAuthenticated) {
       fetchEvent();
     }
-  }, [params.id, form, router, isAuthenticated]);
+  }, [id, form, router, isAuthenticated]);
 
   if (!isAuthenticated) {
     return null;
@@ -79,7 +81,7 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
         tickets: values.tickets,
       };
 
-      await eventService.updateEvent(params.id, eventData);
+      await eventService.updateEvent(id, eventData);
 
       message.success('Мероприятие успешно обновлено');
       router.push('/');
