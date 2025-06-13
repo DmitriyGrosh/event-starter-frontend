@@ -27,11 +27,11 @@ export default function RegisterPage() {
         password: values.password
       });
       
-      messageApi.success('Registration successful!');
+      messageApi.success('Регистрация успешна!');
       router.push('/');
     } catch (error) {
       console.error('Registration failed:', error);
-      messageApi.error('Registration failed. Please try again.');
+      messageApi.error('Ошибка регистрации. Пожалуйста, попробуйте снова.');
     }
   };
 
@@ -46,7 +46,7 @@ export default function RegisterPage() {
       {contextHolder}
       <Card style={{ width: 400, padding: '24px' }}>
         <Title level={2} style={{ textAlign: 'center', marginBottom: '24px' }}>
-          Register
+          Регистрация
         </Title>
         <Form
           name="register"
@@ -55,11 +55,11 @@ export default function RegisterPage() {
         >
           <Form.Item
             name="name"
-            rules={[{ required: true, message: 'Please input your name!' }]}
+            rules={[{ required: true, message: 'Пожалуйста, введите ваше имя!' }]}
           >
             <Input 
               prefix={<UserOutlined />} 
-              placeholder="Full Name" 
+              placeholder="Полное имя" 
               size="large"
             />
           </Form.Item>
@@ -67,8 +67,8 @@ export default function RegisterPage() {
           <Form.Item
             name="email"
             rules={[
-              { required: true, message: 'Please input your email!' },
-              { type: 'email', message: 'Please enter a valid email!' }
+              { required: true, message: 'Пожалуйста, введите ваш email!' },
+              { type: 'email', message: 'Пожалуйста, введите корректный email!' }
             ]}
           >
             <Input 
@@ -81,13 +81,13 @@ export default function RegisterPage() {
           <Form.Item
             name="password"
             rules={[
-              { required: true, message: 'Please input your password!' },
-              { min: 6, message: 'Password must be at least 6 characters!' }
+              { required: true, message: 'Пожалуйста, введите пароль!' },
+              { min: 6, message: 'Пароль должен содержать минимум 6 символов!' }
             ]}
           >
             <Input.Password
               prefix={<LockOutlined />}
-              placeholder="Password"
+              placeholder="Пароль"
               size="large"
             />
           </Form.Item>
@@ -96,33 +96,33 @@ export default function RegisterPage() {
             name="confirmPassword"
             dependencies={['password']}
             rules={[
-              { required: true, message: 'Please confirm your password!' },
+              { required: true, message: 'Пожалуйста, подтвердите пароль!' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (!value || getFieldValue('password') === value) {
                     return Promise.resolve();
                   }
-                  return Promise.reject(new Error('The two passwords do not match!'));
+                  return Promise.reject(new Error('Пароли не совпадают!'));
                 },
               }),
             ]}
           >
             <Input.Password
               prefix={<LockOutlined />}
-              placeholder="Confirm Password"
+              placeholder="Подтвердите пароль"
               size="large"
             />
           </Form.Item>
 
           <Form.Item>
             <Button type="primary" htmlType="submit" block size="large">
-              Register
+              Зарегистрироваться
             </Button>
           </Form.Item>
 
           <div style={{ textAlign: 'center' }}>
-            Already have an account?{' '}
-            <Link href="/login">Login now</Link>
+            Уже есть аккаунт?{' '}
+            <Link href="/login">Войти</Link>
           </div>
         </Form>
       </Card>

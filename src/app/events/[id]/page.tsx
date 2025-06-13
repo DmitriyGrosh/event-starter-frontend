@@ -2,11 +2,13 @@
 
 import {useEventDetails} from "@/entities/events";
 import {Alert, Button, Card, Flex, Popconfirm, Space, Spin, Tag, Typography, Divider, message, InputNumber} from "antd";
-import {CalendarOutlined, EnvironmentOutlined, UserOutlined, TagOutlined, ShoppingOutlined, HeartOutlined, HeartFilled} from "@ant-design/icons";
+import {CalendarOutlined, EnvironmentOutlined, UserOutlined, TagOutlined, ShoppingOutlined, HeartOutlined, HeartFilled, EditOutlined} from "@ant-design/icons";
 import dayjs from "dayjs";
 import {ticketsService} from "@/shared/api/tickets/service";
 import {useState, useEffect} from "react";
 import {useSubscriptionStore} from "@/entities/subscriptions";
+import {useAuth} from "@/entities/viewer";
+import {useRouter} from "next/navigation";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -16,6 +18,8 @@ export default function Page() {
 	const [ticketQuantities, setTicketQuantities] = useState<Record<number, number>>({});
 	const { subscriptions, subscribe, unsubscribe, init: initSubscriptions } = useSubscriptionStore();
 	const [isSubscribed, setIsSubscribed] = useState(false);
+	const { user } = useAuth();
+	const router = useRouter();
 
 	useEffect(() => {
 		initSubscriptions();
@@ -41,6 +45,11 @@ export default function Page() {
 		} catch (error) {
 			message.error('Произошла ошибка при изменении подписки');
 		}
+	};
+
+	const handleEdit = () => {
+		if (!eventDetails) return;
+		router.push(`/events/${eventDetails.id}/edit`);
 	};
 
 	const handleBuyTicket = async (ticketId: number) => {
@@ -92,8 +101,10 @@ export default function Page() {
 
 	if (isLoading) {
 		return (
-			<div style={{ padding: '16px', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
-				<Spin size="large" />
+			<div style={{ padding: '16px' }}>
+				<Flex justify="center" align="center" style={{ height: '200px' }}>
+					<Spin size="large" />
+				</Flex>
 			</div>
 		);
 	}
@@ -124,6 +135,8 @@ export default function Page() {
 		);
 	}
 
+	const isOwner = user?.id === eventDetails.ownerId;
+
 	return (
 		<div style={{ padding: '16px' }}>
 			<Card>
@@ -141,13 +154,24 @@ export default function Page() {
 
 					<Flex justify="space-between" align="center">
 						<Title level={2}>{eventDetails.title}</Title>
-						<Button
-							type={isSubscribed ? "primary" : "default"}
-							icon={isSubscribed ? <HeartFilled /> : <HeartOutlined />}
-							onClick={handleSubscribe}
-						>
-							{isSubscribed ? 'Отписаться' : 'Подписаться'}
-						</Button>
+						<Space>
+							{isOwner && (
+								<Button
+									type="default"
+									icon={<EditOutlined />}
+									onClick={handleEdit}
+								>
+									Редактировать
+								</Button>
+							)}
+							<Button
+								type={isSubscribed ? "primary" : "default"}
+								icon={isSubscribed ? <HeartFilled /> : <HeartOutlined />}
+								onClick={handleSubscribe}
+							>
+								{isSubscribed ? 'Отписаться' : 'Подписаться'}
+							</Button>
+						</Space>
 					</Flex>
 
 					<Space direction="vertical" size="middle">

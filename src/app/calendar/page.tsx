@@ -1,19 +1,26 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Typography, Card, Flex, Badge, List, Row, Col, Button } from 'antd';
 import { CardEvent } from '@/entities/events';
 import dayjs from 'dayjs';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
-import { events } from '@/entities/events/model/eventsData';
-import {useAuth} from "@/entities/viewer";
+import { useAuth } from "@/entities/viewer";
+import { useProfileStore } from '@/entities/profile/model/profileModel';
 
 const { Title } = Typography;
 
 const CalendarPage = () => {
   const { isAuthenticated } = useAuth();
+  const { user, ownedEvents, subscribedEvents, init, isLoading } = useProfileStore();
   const [currentDate, setCurrentDate] = useState(dayjs());
   const [selectedDate, setSelectedDate] = useState(dayjs());
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      init();
+    }
+  }, [isAuthenticated, init]);
 
   const prevMonth = () => {
     setCurrentDate(currentDate.subtract(1, 'month'));
@@ -22,6 +29,8 @@ const CalendarPage = () => {
   const nextMonth = () => {
     setCurrentDate(currentDate.add(1, 'month'));
   };
+
+  const allEvents = [...ownedEvents, ...subscribedEvents];
 
   const renderCalendarDays = () => {
     const days = [];
@@ -37,7 +46,10 @@ const CalendarPage = () => {
     // Add days of the month
     for (let day = 1; day <= daysInMonth; day++) {
       const date = currentDate.date(day);
-      const eventsOnDate = events.filter(event => event.date?.isSame(date, 'day'));
+      const eventsOnDate = allEvents.filter(event => 
+        dayjs(event.dateStart).isSame(date, 'day') || 
+        dayjs(event.dateEnd).isSame(date, 'day')
+      );
       const isSelected = selectedDate.isSame(date, 'day');
 
       days.push(
@@ -69,13 +81,18 @@ const CalendarPage = () => {
     return days;
   };
 
-  const filteredEvents = events.filter(event => 
-    event.date?.isSame(selectedDate, 'day')
+  const filteredEvents = allEvents.filter(event => 
+    dayjs(event.dateStart).isSame(selectedDate, 'day') || 
+    dayjs(event.dateEnd).isSame(selectedDate, 'day')
   );
 
-	if (!isAuthenticated) {
-		return null; // This will be handled by middleware, but we keep it as a safety check
-	}
+  if (!isAuthenticated) {
+    return null;
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Flex vertical gap={16} style={{ padding: '16px' }}>
@@ -99,11 +116,10 @@ const CalendarPage = () => {
           renderItem={(event) => (
             <List.Item>
               <CardEvent
-                id={event.id}
+                id={event.id.toString()}
                 title={event.title}
-                location={event.location}
-                price={event.price}
-                imageUrl={event.imageUrl}
+                location="Location not available"
+                price={0}
                 description={event.description}
               />
             </List.Item>

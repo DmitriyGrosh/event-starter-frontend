@@ -1,6 +1,15 @@
 import {Layout, Menu, Button} from "antd";
 import React, {FC, PropsWithChildren, useState} from "react";
-import {MenuUnfoldOutlined, MenuFoldOutlined, UserOutlined, VideoCameraOutlined, CalendarOutlined, BellOutlined, LogoutOutlined} from "@ant-design/icons";
+import {
+	MenuUnfoldOutlined,
+	MenuFoldOutlined,
+	UserOutlined,
+	VideoCameraOutlined,
+	CalendarOutlined,
+	BellOutlined,
+	LogoutOutlined,
+	PlusCircleOutlined
+} from "@ant-design/icons";
 import {DESIGN_TOKENS} from "@/shared/const";
 import { useRouter, usePathname } from 'next/navigation';
 import {useAuth} from "@/entities/viewer";
@@ -19,6 +28,11 @@ export const AppLayout: FC<PropsWithChildren> = ({children}) => {
 			icon: <VideoCameraOutlined/>,
 			label: 'Мероприятия',
 		},
+		...(isAuthenticated ? [{
+			key: '/events/create',
+			icon: <PlusCircleOutlined />,
+			label: 'Создать мероприятие',
+		}] : []),
 		{
 			key: '/profile',
 			icon: <UserOutlined/>,

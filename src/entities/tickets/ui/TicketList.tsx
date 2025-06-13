@@ -1,27 +1,26 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { Card, Typography, Space, Tag, Button, Spin, Alert, Modal, Form, Input, message } from 'antd';
-import { useTicketsStore } from '../model';
+import React from 'react';
+import { Card, Typography, Space, Tag, Button, Alert, Modal, Form, Input, message } from 'antd';
 import { UserTicket } from '@/shared/api/tickets/types';
 
 const { Title, Text } = Typography;
 
-export const TicketList: React.FC = () => {
-  const { tickets, isLoading, error, init, transferTicket } = useTicketsStore();
+interface TicketListProps {
+  tickets: UserTicket[];
+  onTransfer: (ticketId: number, values: { toUserId: number; quantity: number }) => Promise<void>;
+}
+
+export const TicketList: React.FC<TicketListProps> = ({ tickets, onTransfer }) => {
   const [isTransferModalVisible, setIsTransferModalVisible] = React.useState(false);
   const [selectedTicket, setSelectedTicket] = React.useState<UserTicket | null>(null);
   const [form] = Form.useForm();
-
-  useEffect(() => {
-    init();
-  }, [init]);
 
   const handleTransfer = async (values: { toUserId: number; quantity: number }) => {
     if (!selectedTicket) return;
 
     try {
-      await transferTicket(selectedTicket.id, values);
+      await onTransfer(selectedTicket.id, values);
       message.success('Билет успешно передан');
       setIsTransferModalVisible(false);
       form.resetFields();
@@ -29,22 +28,6 @@ export const TicketList: React.FC = () => {
       message.error('Не удалось передать билет');
     }
   };
-
-  if (isLoading) {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
-        <Spin size="large" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div style={{ padding: '20px' }}>
-        <Alert type="error" message={error} />
-      </div>
-    );
-  }
 
   if (tickets.length === 0) {
     return (
@@ -55,41 +38,43 @@ export const TicketList: React.FC = () => {
   }
 
   return (
-    <Space direction="vertical" style={{ width: '100%' }}>
-      {tickets.map((ticket) => (
-        <Card key={ticket.id}>
-          <Space direction="vertical" style={{ width: '100%' }}>
-            <div>
-              <Title level={4}>{ticket.ticket.name}</Title>
-              <Text type="secondary">Мероприятие: {ticket.ticket.event?.title}</Text>
-            </div>
-            
-            <Space>
-              <Tag color="blue">Количество: {ticket.quantity}</Tag>
-              <Tag color="green">Оплачено: {ticket.totalPaid} ₽</Tag>
-              <Tag color={ticket.status === 'active' ? 'success' : 'default'}>
-                Статус: {ticket.status === 'active' ? 'Активен' : 'Неактивен'}
-              </Tag>
+    <Card>
+      <Space direction="vertical" style={{ width: '100%' }}>
+        {tickets.map((ticket) => (
+          <Card key={ticket.id}>
+            <Space direction="vertical" style={{ width: '100%' }}>
+              <div>
+                <Title level={4}>{ticket.ticket.name}</Title>
+                <Text type="secondary">Мероприятие: {ticket.ticket.event?.title}</Text>
+              </div>
+              
+              <Space>
+                <Tag color="blue">Количество: {ticket.quantity}</Tag>
+                <Tag color="green">Оплачено: {ticket.totalPaid} ₽</Tag>
+                <Tag color={ticket.status === 'active' ? 'success' : 'default'}>
+                  Статус: {ticket.status === 'active' ? 'Активен' : 'Неактивен'}
+                </Tag>
+              </Space>
+
+              <div>
+                <Text>Дата покупки: {new Date(ticket.createdAt).toLocaleDateString('ru-RU')}</Text>
+              </div>
+
+              {ticket.status === 'active' && (
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    setSelectedTicket(ticket);
+                    setIsTransferModalVisible(true);
+                  }}
+                >
+                  Передать билет
+                </Button>
+              )}
             </Space>
-
-            <div>
-              <Text>Дата покупки: {new Date(ticket.createdAt).toLocaleDateString('ru-RU')}</Text>
-            </div>
-
-            {ticket.status === 'active' && (
-              <Button
-                type="primary"
-                onClick={() => {
-                  setSelectedTicket(ticket);
-                  setIsTransferModalVisible(true);
-                }}
-              >
-                Передать билет
-              </Button>
-            )}
-          </Space>
-        </Card>
-      ))}
+          </Card>
+        ))}
+      </Space>
 
       <Modal
         title="Передача билета"
@@ -124,6 +109,6 @@ export const TicketList: React.FC = () => {
           </Form.Item>
         </Form>
       </Modal>
-    </Space>
+    </Card>
   );
 }; 

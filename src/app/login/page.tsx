@@ -32,7 +32,7 @@ export default function LoginPage() {
     }}>
       <Card style={{ width: 400, padding: '24px' }}>
         <Title level={2} style={{ textAlign: 'center', marginBottom: '24px' }}>
-          Login
+          Вход
         </Title>
         <Form
           name="login"
@@ -43,8 +43,8 @@ export default function LoginPage() {
           <Form.Item
             name="email"
             rules={[
-              { required: true, message: 'Please input your email!' },
-              { type: 'email', message: 'Please enter a valid email!' }
+              { required: true, message: 'Пожалуйста, введите ваш email!' },
+              { type: 'email', message: 'Пожалуйста, введите корректный email!' }
             ]}
           >
             <Input 
@@ -56,24 +56,24 @@ export default function LoginPage() {
 
           <Form.Item
             name="password"
-            rules={[{ required: true, message: 'Please input your password!' }]}
+            rules={[{ required: true, message: 'Пожалуйста, введите пароль!' }]}
           >
             <Input.Password
               prefix={<LockOutlined />}
-              placeholder="Password"
+              placeholder="Пароль"
               size="large"
             />
           </Form.Item>
 
           <Form.Item>
             <Button type="primary" htmlType="submit" block size="large">
-              Log in
+              Войти
             </Button>
           </Form.Item>
 
           <div style={{ textAlign: 'center' }}>
-            Don't have an account?{' '}
-            <Link href="/register">Register now</Link>
+            Нет аккаунта?{' '}
+            <Link href="/register">Зарегистрироваться</Link>
           </div>
         </Form>
       </Card>

@@ -3,27 +3,30 @@
 import React, { useEffect } from 'react';
 import { Card, Typography, Avatar, Space, Tabs, Flex, Statistic, Row, Col, Spin } from 'antd';
 import { UserOutlined, CalendarOutlined, TeamOutlined, TagOutlined } from '@ant-design/icons';
-import { CardEvent } from '@/entities/events';
 import { useAuth } from "@/entities/viewer";
 import { useProfileStore } from '@/entities/profile/model/profileModel';
-import { UserEvent } from '@/shared/api/users/types';
-import { TicketList } from '@/entities/tickets';
+import { useTicketsStore } from '@/entities/tickets/model';
+import { AboutTab, EventsTab, TicketsTab } from '@/entities/profile/ui/tabs';
 
 const { Title, Text } = Typography;
 
 export default function ProfilePage() {
   const { isAuthenticated } = useAuth();
-  const { user, ownedEvents, subscribedEvents, isLoading, error, init } = useProfileStore();
+  const { user, ownedEvents, subscribedEvents, isLoading: isProfileLoading, error: profileError, init: initProfile } = useProfileStore();
+  const { tickets, isLoading: isTicketsLoading, error: ticketsError, init: initTickets, transferTicket } = useTicketsStore();
 
   useEffect(() => {
-    init();
-  }, [init]);
+    if (isAuthenticated) {
+      initProfile();
+      initTickets();
+    }
+  }, [isAuthenticated, initProfile, initTickets]);
 
   if (!isAuthenticated) {
-    return null; // This will be handled by middleware, but we keep it as a safety check
+    return null;
   }
 
-  if (isLoading) {
+  if (isProfileLoading || isTicketsLoading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
         <Spin size="large" />
@@ -31,10 +34,10 @@ export default function ProfilePage() {
     );
   }
 
-  if (error) {
+  if (profileError || ticketsError) {
     return (
       <div style={{ padding: '20px' }}>
-        <Text type="danger">Error: {error}</Text>
+        <Text type="danger">Error: {profileError || ticketsError}</Text>
       </div>
     );
   }
@@ -47,74 +50,40 @@ export default function ProfilePage() {
     );
   }
 
-  const renderEventCard = (event: UserEvent) => (
-    <CardEvent
-      key={event.id}
-      id={event.id.toString()}
-      title={event.title}
-      location="Location not available"
-      price={0}
-      description={event.description}
-      imageUrl={undefined}
-    />
-  );
-
   const items = [
     {
       key: 'about',
       label: 'О себе',
-      children: (
-        <Card>
-          <Space direction="vertical" style={{ width: '100%' }}>
-            <div>
-              <Text strong>Email:</Text>
-              <Text> {user.email}</Text>
-            </div>
-            <div>
-              <Text strong>Name:</Text>
-              <Text> {user.name}</Text>
-            </div>
-            <div>
-              <Text strong>Registration Date:</Text>
-              <Text> {new Date(user.createdAt).toLocaleDateString()}</Text>
-            </div>
-          </Space>
-        </Card>
-      ),
+      children: <AboutTab user={user} />,
     },
     {
       key: 'owned',
       label: 'Созданные мероприятия',
       children: (
-        <Flex vertical gap={8}>
-          {ownedEvents.length > 0 ? (
-            ownedEvents.map(renderEventCard)
-          ) : (
-            <Text>У вас пока нет созданных мероприятий</Text>
-          )}
-        </Flex>
+        <EventsTab 
+          events={ownedEvents} 
+          emptyText="У вас пока нет созданных мероприятий" 
+        />
       ),
     },
     {
       key: 'subscribed',
       label: 'Подписки',
       children: (
-        <Flex vertical gap={8}>
-          {subscribedEvents.length > 0 ? (
-            subscribedEvents.map(renderEventCard)
-          ) : (
-            <Text>У вас пока нет подписок на мероприятия</Text>
-          )}
-        </Flex>
+        <EventsTab 
+          events={subscribedEvents} 
+          emptyText="У вас пока нет подписок на мероприятия" 
+        />
       ),
     },
     {
       key: 'tickets',
       label: 'Билеты',
-      icon: <TagOutlined />,
-      children: <TicketList />,
+      children: <TicketsTab tickets={tickets} onTransfer={transferTicket} />,
     },
   ];
+
+  const totalTickets = tickets.reduce((sum, ticket) => sum + ticket.quantity, 0);
 
   return (
     <div style={{ padding: '24px', maxWidth: '800px', margin: '0 auto' }}>
@@ -128,18 +97,25 @@ export default function ProfilePage() {
           </div>
 
           <Row gutter={16} justify="center">
-            <Col>
+            <Col style={{ textAlign: 'center' }}>
               <Statistic
                 title="Созданные мероприятия"
                 value={ownedEvents.length}
                 prefix={<CalendarOutlined />}
               />
             </Col>
-            <Col>
+            <Col style={{ textAlign: 'center' }}>
               <Statistic
                 title="Подписки"
                 value={subscribedEvents.length}
                 prefix={<TeamOutlined />}
+              />
+            </Col>
+            <Col style={{ textAlign: 'center' }}>
+              <Statistic
+                title="Билеты"
+                value={totalTickets}
+                prefix={<TagOutlined />}
               />
             </Col>
           </Row>
