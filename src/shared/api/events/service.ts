@@ -12,13 +12,21 @@ export const eventService = {
     return data;
   },
 
-  createEvent: async (eventData: CreateEventRequest): Promise<CreateEventResponse> => {
-    const { data } = await api.post('/events/manage/', eventData);
+  createEvent: async (formData: FormData): Promise<CreateEventResponse> => {
+    const { data } = await api.post('/events/manage/', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return data;
   },
 
-  updateEvent: async (id: string | number, eventData: UpdateEventRequest): Promise<UpdateEventResponse> => {
-    const { data } = await api.patch(`/events/manage/${id}`, eventData);
+  updateEvent: async (id: string | number, formData: FormData): Promise<UpdateEventResponse> => {
+    const { data } = await api.patch(`/events/manage/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return data;
   },
 

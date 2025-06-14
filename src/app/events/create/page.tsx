@@ -1,12 +1,13 @@
 'use client';
 
 import React from 'react';
-import { Card, Form, Input, Button, DatePicker, InputNumber, Space, Typography, message } from 'antd';
+import { Card, Form, Input, Button, DatePicker, InputNumber, Space, Typography, message, Upload } from 'antd';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/entities/viewer';
 import { eventService } from '@/shared/api/events';
-import { CreateEventRequest } from '@/shared/api/events/types';
 import dayjs from 'dayjs';
+import { UploadOutlined } from '@ant-design/icons';
+import type { UploadFile } from 'antd/es/upload/interface';
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -30,6 +31,8 @@ export default function CreateEventPage() {
   const { isAuthenticated } = useAuth();
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [imageFile, setImageFile] = React.useState<File | null>(null);
+  const [fileList, setFileList] = React.useState<UploadFile[]>([]);
 
   if (!isAuthenticated) {
     return null;
@@ -40,23 +43,51 @@ export default function CreateEventPage() {
       setIsSubmitting(true);
       const [dateStart, dateEnd] = values.dateRange;
 
-      const eventData: CreateEventRequest = {
+      const eventData = {
         title: values.title,
         description: values.description,
         location: values.location,
         dateStart: dateStart.toISOString(),
         dateEnd: dateEnd.toISOString(),
-        tickets: values.tickets,
+        tickets: values.tickets.map(ticket => ({
+          name: ticket.name,
+          description: ticket.description,
+          price: ticket.price,
+          quantity: ticket.quantity
+        }))
       };
 
-      await eventService.createEvent(eventData);
+      const formData = new FormData();
+      formData.append('eventData', JSON.stringify(eventData));
+
+      if (imageFile) {
+        formData.append('image', imageFile);
+      }
+
+      console.log('Submitting form data:', {
+        eventData: JSON.parse(formData.get('eventData') as string),
+        hasImage: !!formData.get('image')
+      });
+
+      await eventService.createEvent(formData);
 
       message.success('Мероприятие успешно создано');
       router.push('/');
     } catch (error) {
+      console.error('Error creating event:', error);
       message.error('Не удалось создать мероприятие');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleImageChange = (info: any) => {
+    console.log('Upload info:', info);
+    setFileList(info.fileList);
+    if (info.fileList && info.fileList.length > 0) {
+      setImageFile(info.fileList[0].originFileObj);
+    } else {
+      setImageFile(null);
     }
   };
 
@@ -114,6 +145,20 @@ export default function CreateEventPage() {
                 format="DD.MM.YYYY HH:mm"
                 style={{ width: '100%' }}
               />
+            </Form.Item>
+
+            <Form.Item
+              label="Изображение мероприятия"
+            >
+              <Upload
+                accept="image/*"
+                maxCount={1}
+                beforeUpload={() => false}
+                onChange={handleImageChange}
+                fileList={fileList}
+              >
+                <Button icon={<UploadOutlined />}>Загрузить изображение</Button>
+              </Upload>
             </Form.Item>
 
             <Form.List

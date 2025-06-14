@@ -1,12 +1,12 @@
 'use client';
 
 import React from 'react';
-import { Card, Form, Input, Button, DatePicker, InputNumber, Space, Typography, message, Spin } from 'antd';
+import { Card, Form, Input, Button, DatePicker, InputNumber, Space, Typography, message, Spin, Upload } from 'antd';
 import {useParams, useRouter} from 'next/navigation';
 import { useAuth } from '@/entities/viewer';
 import { eventService } from '@/shared/api/events';
-import { UpdateEventRequest } from '@/shared/api/events/types';
 import dayjs from 'dayjs';
+import { UploadOutlined } from '@ant-design/icons';
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -32,6 +32,7 @@ export default function EditEventPage() {
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [imageFile, setImageFile] = React.useState<File | null>(null);
   const id = params?.id as string;
 
   React.useEffect(() => {
@@ -72,16 +73,23 @@ export default function EditEventPage() {
       setIsSubmitting(true);
       const [dateStart, dateEnd] = values.dateRange;
 
-      const eventData: UpdateEventRequest = {
+      const eventData = {
         title: values.title,
         description: values.description,
         location: values.location,
-        dateStart: dateStart.toISOString(),
-        dateEnd: dateEnd.toISOString(),
+        startDate: dateStart.toISOString(),
+        endDate: dateEnd.toISOString(),
         tickets: values.tickets,
       };
 
-      await eventService.updateEvent(id, eventData);
+      const formData = new FormData();
+      formData.append('eventData', JSON.stringify(eventData));
+
+      if (imageFile) {
+        formData.append('image', imageFile);
+      }
+
+      await eventService.updateEvent(id, formData);
 
       message.success('Мероприятие успешно обновлено');
       router.push('/');
@@ -89,6 +97,12 @@ export default function EditEventPage() {
       message.error('Не удалось обновить мероприятие');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleImageChange = (info: any) => {
+    if (info.file.status === 'done') {
+      setImageFile(info.file.originFileObj);
     }
   };
 
@@ -151,6 +165,19 @@ export default function EditEventPage() {
                 format="DD.MM.YYYY HH:mm"
                 style={{ width: '100%' }}
               />
+            </Form.Item>
+
+            <Form.Item
+              label="Изображение мероприятия"
+            >
+              <Upload
+                accept="image/*"
+                maxCount={1}
+                beforeUpload={() => false}
+                onChange={handleImageChange}
+              >
+                <Button icon={<UploadOutlined />}>Загрузить новое изображение</Button>
+              </Upload>
             </Form.Item>
 
             <Form.List
