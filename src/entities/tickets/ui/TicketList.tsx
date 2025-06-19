@@ -51,8 +51,8 @@ export const TicketList: React.FC<TicketListProps> = ({ tickets, onTransfer }) =
               <Space>
                 <Tag color="blue">Количество: {ticket.quantity}</Tag>
                 <Tag color="green">Оплачено: {ticket.totalPaid} ₽</Tag>
-                <Tag color={ticket.status === 'active' ? 'success' : 'default'}>
-                  Статус: {ticket.status === 'active' ? 'Активен' : 'Неактивен'}
+                <Tag color={ticket.status === 'COMPLETED' ? 'success' : 'default'}>
+                  Статус: {ticket.status === 'COMPLETED' ? 'Активен' : 'Неактивен'}
                 </Tag>
               </Space>
 
@@ -60,7 +60,7 @@ export const TicketList: React.FC<TicketListProps> = ({ tickets, onTransfer }) =
                 <Text>Дата покупки: {new Date(ticket.createdAt).toLocaleDateString('ru-RU')}</Text>
               </div>
 
-              {ticket.status === 'active' && (
+              {ticket.status === 'COMPLETED' && (
                 <Button
                   type="primary"
                   onClick={() => {
