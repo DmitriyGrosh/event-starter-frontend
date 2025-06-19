@@ -68,7 +68,7 @@ export const CardEvent = ({
 		>
 			<div
 				style={{
-					width: '90px',
+					width: '160px',
 					height: '90px',
 					backgroundImage: `url(${imageUrl})`,
 					backgroundSize: 'cover',
