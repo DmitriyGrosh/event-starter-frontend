@@ -21,6 +21,8 @@ export default function Page() {
 	const { user, isAuthenticated } = useAuth();
 	const router = useRouter();
 	const [showLoginModal, setShowLoginModal] = useState(false);
+	const [showSuccessModal, setShowSuccessModal] = useState(false);
+	const [purchasedTicketInfo, setPurchasedTicketInfo] = useState<{name: string, quantity: number} | null>(null);
 
 	useEffect(() => {
 		initSubscriptions();
@@ -80,8 +82,14 @@ export default function Page() {
 			setPurchasingTicketId(ticketId);
 			const quantity = ticketQuantities[ticketId] || 1;
 			const purchase = await ticketsService.buyTicket(ticketId, { quantity });
-			message.success(`Успешно приобретено ${quantity} билетов!`);
-			console.log('Ticket purchased:', purchase);
+			
+			// Find the ticket name for the success modal
+			const ticket = eventDetails?.tickets?.find(t => t.id === ticketId);
+			setPurchasedTicketInfo({
+				name: ticket?.name || 'Билет',
+				quantity: quantity
+			});
+			setShowSuccessModal(true);
 			
 			// Update ticket quantity in the UI
 			if (eventDetails?.tickets) {
@@ -104,15 +112,23 @@ export default function Page() {
 				...prev,
 				[ticketId]: 1
 			}));
-			
-			// Refetch event details to ensure we have the latest data
-			await refetch();
 		} catch (error) {
 			message.error('Ошибка при покупке билета');
 			console.error('Failed to purchase ticket:', error);
 		} finally {
 			setPurchasingTicketId(null);
 		}
+	};
+
+	const handleSuccessModalClose = () => {
+		setShowSuccessModal(false);
+		setPurchasedTicketInfo(null);
+	};
+
+	const handleGoToProfile = () => {
+		setShowSuccessModal(false);
+		setPurchasedTicketInfo(null);
+		router.push('/profile');
 	};
 
 	const handleQuantityChange = (ticketId: number, value: number | null) => {
@@ -311,6 +327,28 @@ export default function Page() {
 				<div>
 					<p>Для подписки на мероприятия необходимо войти в систему.</p>
 					<p>Хотите перейти на страницу входа?</p>
+				</div>
+			</Modal>
+
+			<Modal
+				title="Билет успешно приобретен"
+				open={showSuccessModal}
+				onOk={handleGoToProfile}
+				onCancel={handleSuccessModalClose}
+				okText="Перейти в профиль"
+				cancelText="Закрыть"
+			>
+				<div>
+					<p>Вы успешно приобрели билеты!</p>
+					{purchasedTicketInfo && (
+						<p>Название билета: {purchasedTicketInfo.name}</p>
+					)}
+					{purchasedTicketInfo && (
+						<p>Количество приобретенных билетов: {purchasedTicketInfo.quantity}</p>
+					)}
+					<p style={{ marginTop: '16px', fontWeight: 'bold' }}>
+						Хотите посмотреть все ваши билеты в профиле?
+					</p>
 				</div>
 			</Modal>
 		</div>
