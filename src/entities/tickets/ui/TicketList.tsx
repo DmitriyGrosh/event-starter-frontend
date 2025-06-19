@@ -3,6 +3,7 @@
 import React from 'react';
 import { Card, Typography, Space, Tag, Button, Alert, Modal, Form, Input, message } from 'antd';
 import { UserTicket } from '@/shared/api/tickets/types';
+import { useRouter } from 'next/navigation';
 
 const { Title, Text } = Typography;
 
@@ -15,6 +16,7 @@ export const TicketList: React.FC<TicketListProps> = ({ tickets, onTransfer }) =
   const [isTransferModalVisible, setIsTransferModalVisible] = React.useState(false);
   const [selectedTicket, setSelectedTicket] = React.useState<UserTicket | null>(null);
   const [form] = Form.useForm();
+  const router = useRouter();
 
   const handleTransfer = async (values: { toUserId: number; quantity: number }) => {
     if (!selectedTicket) return;
@@ -26,6 +28,12 @@ export const TicketList: React.FC<TicketListProps> = ({ tickets, onTransfer }) =
       form.resetFields();
     } catch (error) {
       message.error('Не удалось передать билет');
+    }
+  };
+
+  const handleTicketClick = (ticket: UserTicket) => {
+    if (ticket.ticket.eventId) {
+      router.push(`/events/${ticket.ticket.eventId}`);
     }
   };
 
@@ -41,7 +49,12 @@ export const TicketList: React.FC<TicketListProps> = ({ tickets, onTransfer }) =
     <Card>
       <Space direction="vertical" style={{ width: '100%' }}>
         {tickets.map((ticket) => (
-          <Card key={ticket.id}>
+          <Card 
+            key={ticket.id}
+            hoverable
+            style={{ cursor: 'pointer' }}
+            onClick={() => handleTicketClick(ticket)}
+          >
             <Space direction="vertical" style={{ width: '100%' }}>
               <div>
                 <Title level={4}>{ticket.ticket.name}</Title>
@@ -63,7 +76,8 @@ export const TicketList: React.FC<TicketListProps> = ({ tickets, onTransfer }) =
               {ticket.status === 'COMPLETED' && (
                 <Button
                   type="primary"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent card click when clicking button
                     setSelectedTicket(ticket);
                     setIsTransferModalVisible(true);
                   }}
