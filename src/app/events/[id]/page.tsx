@@ -213,13 +213,15 @@ export default function Page() {
 									Редактировать
 								</Button>
 							)}
-							<Button
-								type={isSubscribed ? "primary" : "default"}
-								icon={isSubscribed ? <HeartFilled /> : <HeartOutlined />}
-								onClick={handleSubscribe}
-							>
-								{isSubscribed ? 'Отписаться' : 'Подписаться'}
-							</Button>
+							{!isOwner && (
+								<Button
+									type={isSubscribed ? "primary" : "default"}
+									icon={isSubscribed ? <HeartFilled /> : <HeartOutlined />}
+									onClick={handleSubscribe}
+								>
+									{isSubscribed ? 'Отписаться' : 'Подписаться'}
+								</Button>
+							)}
 						</Space>
 					</div>
 
