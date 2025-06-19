@@ -47,7 +47,7 @@ export const TicketList: React.FC<TicketListProps> = ({ tickets, onTransfer }) =
 
   return (
     <Card>
-      <Space direction="vertical" style={{ width: '100%' }}>
+      <Space direction="vertical" size="large" style={{ width: '100%' }}>
         {tickets.map((ticket) => (
           <Card 
             key={ticket.id}
@@ -55,13 +55,13 @@ export const TicketList: React.FC<TicketListProps> = ({ tickets, onTransfer }) =
             style={{ cursor: 'pointer' }}
             onClick={() => handleTicketClick(ticket)}
           >
-            <Space direction="vertical" style={{ width: '100%' }}>
+            <Space direction="vertical" size="middle" style={{ width: '100%' }}>
               <div>
-                <Title level={4}>{ticket.ticket.name}</Title>
+                <Title level={4} style={{ margin: 0 }}>{ticket.ticket.name}</Title>
                 <Text type="secondary">Мероприятие: {ticket.ticket.event?.title}</Text>
               </div>
               
-              <Space>
+              <Space size="small" wrap>
                 <Tag color="blue">Количество: {ticket.quantity}</Tag>
                 <Tag color="green">Оплачено: {ticket.totalPaid} ₽</Tag>
                 <Tag color={ticket.status === 'COMPLETED' ? 'success' : 'default'}>
