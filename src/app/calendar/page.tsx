@@ -116,10 +116,10 @@ const CalendarPage = () => {
           renderItem={(event) => (
             <List.Item>
               <CardEvent
+	              tickets={[]}
                 id={event.id.toString()}
                 title={event.title}
                 location="Location not available"
-                price={0}
                 description={event.description}
                 imageUrl={event.imageUrl || undefined}
               />

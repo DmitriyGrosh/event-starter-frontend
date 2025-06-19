@@ -42,7 +42,7 @@ export const CardEvent = ({
 	// Calculate price from tickets
 	const getPriceDisplay = () => {
 		if (!tickets || tickets.length === 0) {
-			return 'Бесплатно';
+			return null;
 		}
 		
 		const prices = tickets.map(ticket => ticket.price);

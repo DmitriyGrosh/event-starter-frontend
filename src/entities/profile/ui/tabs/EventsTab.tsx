@@ -15,11 +15,11 @@ interface EventsTabProps {
 export const EventsTab: React.FC<EventsTabProps> = ({ events, emptyText }) => {
   const renderEventCard = (event: UserEvent) => (
     <CardEvent
+	    tickets={[]}
       key={event.id}
       id={event.id.toString()}
       title={event.title}
       location="Location not available"
-      price={0}
       description={event.description}
       imageUrl={event.imageUrl ?? undefined}
     />

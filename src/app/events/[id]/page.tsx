@@ -304,14 +304,6 @@ export default function Page() {
 								</Space>
 							</Space>
 						)}
-
-						<Divider />
-
-						<Flex justify="space-between" align="center">
-							<Tag color="blue" style={{ fontSize: '16px', padding: '4px 8px' }}>
-								{eventDetails.price === 0 ? 'Бесплатно' : `${eventDetails.price.toLocaleString('ru-RU')}₽`}
-							</Tag>
-						</Flex>
 					</Space>
 				</Space>
 			</Card>
