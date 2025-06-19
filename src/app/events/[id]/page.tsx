@@ -1,7 +1,7 @@
 'use client';
 
 import {useEventDetails} from "@/entities/events";
-import {Alert, Button, Card, Flex, Popconfirm, Space, Spin, Tag, Typography, Divider, message, InputNumber} from "antd";
+import {Alert, Button, Card, Flex, Popconfirm, Space, Spin, Tag, Typography, Divider, message, InputNumber, Modal} from "antd";
 import {CalendarOutlined, EnvironmentOutlined, UserOutlined, TagOutlined, ShoppingOutlined, HeartOutlined, HeartFilled, EditOutlined} from "@ant-design/icons";
 import dayjs from "dayjs";
 import {ticketsService} from "@/shared/api/tickets/service";
@@ -18,8 +18,9 @@ export default function Page() {
 	const [ticketQuantities, setTicketQuantities] = useState<Record<number, number>>({});
 	const { subscriptions, subscribe, unsubscribe, init: initSubscriptions } = useSubscriptionStore();
 	const [isSubscribed, setIsSubscribed] = useState(false);
-	const { user } = useAuth();
+	const { user, isAuthenticated } = useAuth();
 	const router = useRouter();
+	const [showLoginModal, setShowLoginModal] = useState(false);
 
 	useEffect(() => {
 		initSubscriptions();
@@ -34,6 +35,13 @@ export default function Page() {
 
 	const handleSubscribe = async () => {
 		if (!eventDetails) return;
+		
+		// Check if user is authenticated
+		if (!isAuthenticated) {
+			setShowLoginModal(true);
+			return;
+		}
+
 		try {
 			if (isSubscribed) {
 				await unsubscribe(eventDetails.id);
@@ -47,12 +55,27 @@ export default function Page() {
 		}
 	};
 
+	const handleLoginModalOk = () => {
+		setShowLoginModal(false);
+		router.push('/login');
+	};
+
+	const handleLoginModalCancel = () => {
+		setShowLoginModal(false);
+	};
+
 	const handleEdit = () => {
 		if (!eventDetails) return;
 		router.push(`/events/${eventDetails.id}/edit`);
 	};
 
 	const handleBuyTicket = async (ticketId: number) => {
+		// Check if user is authenticated
+		if (!isAuthenticated) {
+			setShowLoginModal(true);
+			return;
+		}
+
 		try {
 			setPurchasingTicketId(ticketId);
 			const quantity = ticketQuantities[ticketId] || 1;
@@ -223,17 +246,17 @@ export default function Page() {
 								<Space direction="vertical" style={{ width: '100%' }}>
 									{eventDetails.tickets.map((ticket) => (
 										<Card key={ticket.id} size="small">
-											<Space direction="vertical" style={{ width: '100%' }}>
+											<Space direction="vertical" size="small" style={{ width: '100%' }}>
 												<Text strong>{ticket.name}</Text>
 												<Text type="secondary">{ticket.description}</Text>
-												<Flex justify="space-between" align="center">
+												<Flex justify="space-between" align="center" gap={16}>
 													<Text>Количество: {ticket.quantity}</Text>
 													<Tag color="green">
 														{ticket.price === 0 ? 'Бесплатно' : `${ticket.price.toLocaleString('ru-RU')}₽`}
 													</Tag>
 												</Flex>
-												<Flex justify="space-between" align="center">
-													<Space>
+												<Flex justify="space-between" align="center" gap={16}>
+													<Space size={8}>
 														<Text>Количество билетов:</Text>
 														<InputNumber
 															min={1}
@@ -276,6 +299,20 @@ export default function Page() {
 					</Space>
 				</Space>
 			</Card>
+			
+			<Modal
+				title="Требуется авторизация"
+				open={showLoginModal}
+				onOk={handleLoginModalOk}
+				onCancel={handleLoginModalCancel}
+				okText="Войти"
+				cancelText="Отмена"
+			>
+				<div>
+					<p>Для подписки на мероприятия необходимо войти в систему.</p>
+					<p>Хотите перейти на страницу входа?</p>
+				</div>
+			</Modal>
 		</div>
 	);
 }
