@@ -17,6 +17,7 @@ export interface Event {
   dateEnd: string;
   ownerId: number;
   createdAt: string;
+	imageUrl: string;
   owner: {
     id: number;
     name: string;

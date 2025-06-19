@@ -77,6 +77,7 @@ const Home = () => {
                 location={event.location}
                 price={event.price}
                 description={event.description}
+                imageUrl={event.imageUrl || undefined}
               />
             </div>
           );

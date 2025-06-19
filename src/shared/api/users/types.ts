@@ -1,6 +1,7 @@
 export interface UserEvent {
   id: number;
   title: string;
+	imageUrl: string;
   description: string;
   dateStart: string;
   dateEnd: string;

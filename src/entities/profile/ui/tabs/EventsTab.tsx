@@ -21,7 +21,7 @@ export const EventsTab: React.FC<EventsTabProps> = ({ events, emptyText }) => {
       location="Location not available"
       price={0}
       description={event.description}
-      imageUrl={undefined}
+      imageUrl={event.imageUrl ?? undefined}
     />
   );
 

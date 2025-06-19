@@ -12,7 +12,7 @@ const { Title } = Typography;
 
 const CalendarPage = () => {
   const { isAuthenticated } = useAuth();
-  const { user, ownedEvents, subscribedEvents, init, isLoading } = useProfileStore();
+  const { ownedEvents, subscribedEvents, init, isLoading } = useProfileStore();
   const [currentDate, setCurrentDate] = useState(dayjs());
   const [selectedDate, setSelectedDate] = useState(dayjs());
 
@@ -121,6 +121,7 @@ const CalendarPage = () => {
                 location="Location not available"
                 price={0}
                 description={event.description}
+                imageUrl={event.imageUrl || undefined}
               />
             </List.Item>
           )}

@@ -136,6 +136,7 @@ export default function Page() {
 	}
 
 	const isOwner = user?.id === eventDetails.ownerId;
+	const url = eventDetails.imageUrl ?? `https://placehold.co/600x400?text=${encodeURIComponent(eventDetails.title)}`;
 
 	return (
 		<div style={{ padding: '16px' }}>
@@ -145,7 +146,7 @@ export default function Page() {
 						style={{
 							width: '100%',
 							height: '300px',
-							backgroundImage: `url(https://placehold.co/600x400?text=${encodeURIComponent(eventDetails.title)})`,
+							backgroundImage: `url(${url})`,
 							backgroundSize: 'cover',
 							backgroundPosition: 'center',
 							borderRadius: '8px'
