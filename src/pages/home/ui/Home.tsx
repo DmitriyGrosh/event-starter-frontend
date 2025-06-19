@@ -75,7 +75,7 @@ const Home = () => {
                 id={event.id.toString()}
                 title={event.title}
                 location={event.location}
-                price={event.price}
+                tickets={event.tickets}
                 description={event.description}
                 imageUrl={event.imageUrl || undefined}
               />
@@ -89,12 +89,12 @@ const Home = () => {
         )}
         {!loading && !hasMore && events.length > 0 && (
           <Flex justify="center" style={{ padding: '20px 0' }}>
-            <Text type="secondary">No more events to load</Text>
+            <Text type="secondary">Больше событий нет</Text>
           </Flex>
         )}
         {!loading && events.length === 0 && (
           <Flex justify="center" style={{ padding: '20px 0' }}>
-            <Text type="secondary">No events found</Text>
+            <Text type="secondary">События не найдены</Text>
           </Flex>
         )}
       </Flex>

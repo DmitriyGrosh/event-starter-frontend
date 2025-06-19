@@ -33,27 +33,31 @@ export const AppLayout: FC<PropsWithChildren> = ({children}) => {
 			icon: <PlusCircleOutlined />,
 			label: 'Создать мероприятие',
 		}] : []),
-		{
+		...(isAuthenticated ? [{
 			key: '/profile',
 			icon: <UserOutlined/>,
 			label: 'Профиль',
-		},
-		{
+		}] : []),
+		...(isAuthenticated ? [{
 			key: '/calendar',
 			icon: <CalendarOutlined/>,
 			label: 'Календарь',
-		},
-		{
+		}] : []),
+		...(isAuthenticated ? [{
 			key: '/notifications',
 			icon: <BellOutlined/>,
 			label: 'Уведомления',
-		},
+		}] : []),
 		...(isAuthenticated ? [{
 			key: 'logout',
 			icon: <LogoutOutlined />,
 			label: 'Выйти',
 			danger: true,
-		}] : []),
+		}] : [{
+			key: '/login',
+			icon: <UserOutlined />,
+			label: 'Войти',
+		}]),
 	];
 
 	const handleMenuClick = ({ key }: { key: string }) => {
