@@ -192,9 +192,18 @@ export default function Page() {
 						}}
 					/>
 
-					<Flex justify="space-between" align="center">
-						<Title level={2}>{eventDetails.title}</Title>
-						<Space>
+					<div style={{ 
+						display: 'flex', 
+						justifyContent: 'space-between', 
+						alignItems: 'center',
+						flexWrap: 'wrap',
+						gap: '16px',
+						width: '100%'
+					}}>
+						<Title level={2} style={{ margin: 0 }}>
+							{eventDetails.title}
+						</Title>
+						<Space size="middle" wrap>
 							{isOwner && (
 								<Button
 									type="default"
@@ -212,7 +221,7 @@ export default function Page() {
 								{isSubscribed ? 'Отписаться' : 'Подписаться'}
 							</Button>
 						</Space>
-					</Flex>
+					</div>
 
 					<Space direction="vertical" size="middle">
 						<Space>
